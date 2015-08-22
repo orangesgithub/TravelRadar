@@ -10,6 +10,6 @@ import android.view.ViewGroup;
 public class TipsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tip_fragment, container, false);
+        return inflater.inflate(R.layout.tips_fragment, container, false);
     }
 }

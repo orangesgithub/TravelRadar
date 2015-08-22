@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="border">#B0BEC5</color>
-    <color name="solid">#FAFAFA</color>
+    <color name="title_body">#29B6F6</color>
+    <color name="color_white">#FFFFFF</color>
 </resources>

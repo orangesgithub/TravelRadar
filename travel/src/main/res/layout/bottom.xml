@@ -3,7 +3,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@drawable/border">
+    android:background="@color/color_white"
+    android:elevation="2dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="aaaa"
+            android:text="@string/first_page"
             android:layout_gravity="center"/>
     </LinearLayout>
 
@@ -43,7 +44,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="bbbb"
+            android:text="@string/second_page"
             android:layout_gravity="center"/>
     </LinearLayout>
 
@@ -64,7 +65,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cccc"
+            android:text="@string/third_page"
             android:layout_gravity="center"/>
     </LinearLayout>
 
@@ -85,7 +86,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="dddd"
+            android:text="@string/fourth_page"
             android:layout_gravity="center"/>
     </LinearLayout>
 </LinearLayout>

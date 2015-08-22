@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="drawer_list">
-        <item>111</item>
-        <item>222</item>
-        <item>333</item>
+    <string-array name="city_list">
+        <item>全部</item>
+        <item>长三角</item>
+        <item>珠三角</item>
+        <item>京津冀</item>
+        <item>华中</item>
+        <item>西南</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="tab_items">
+        <item>机票酒店</item>
+        <item>旅行锦囊</item>
+        <item>海外购物</item>
     </string-array>
 </resources>

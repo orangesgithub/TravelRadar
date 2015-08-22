@@ -2,12 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@drawable/border">
+    android:layout_height="60dp"
+    android:background="@color/title_body">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="25sp"
+        style="?android:attr/borderlessButtonStyle"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
-        android:text="travel radar"/>
+        android:textSize="25sp"
+        android:textColor="@color/color_white"
+        android:text="@string/app_name"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="3dp">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/title_right_btn"
+            android:textSize="20sp"
+            android:textColor="@color/color_white"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/start_city"
+            android:gravity="center|right" />
+    </LinearLayout>
 </LinearLayout>

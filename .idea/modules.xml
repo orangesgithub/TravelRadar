@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TraverRadar.iml" filepath="$PROJECT_DIR$/TraverRadar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TravelRadar.iml" filepath="$PROJECT_DIR$/TravelRadar.iml" />
       <module fileurl="file://$PROJECT_DIR$/travel/travel.iml" filepath="$PROJECT_DIR$/travel/travel.iml" />
     </modules>
   </component>
