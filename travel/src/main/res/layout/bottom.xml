@@ -3,8 +3,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@color/color_white"
-    android:elevation="2dp">
+    android:background="@color/color_bottom"
+    android:elevation="4dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -16,8 +16,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:id="@+id/btm_radar_btn"
-            android:src="@drawable/radar"
-            android:background="@null"
+            android:background="@drawable/radar"
             android:scaleType="fitXY"
             android:layout_gravity="center"/>
         <TextView
@@ -37,8 +36,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:id="@+id/btm_tips_btn"
-            android:src="@drawable/tips"
-            android:background="@null"
+            android:background="@drawable/tips"
             android:scaleType="fitXY"
             android:layout_gravity="center"/>
         <TextView
@@ -58,8 +56,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:id="@+id/btm_search_btn"
-            android:src="@drawable/search"
-            android:background="@null"
+            android:background="@drawable/search"
             android:scaleType="fitXY"
             android:layout_gravity="center"/>
         <TextView
@@ -79,8 +76,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:id="@+id/btm_info_btn"
-            android:src="@drawable/info"
-            android:background="@null"
+            android:background="@drawable/info"
             android:scaleType="fitXY"
             android:layout_gravity="center"/>
         <TextView

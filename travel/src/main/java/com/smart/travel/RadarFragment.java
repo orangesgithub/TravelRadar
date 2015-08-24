@@ -3,16 +3,16 @@ package com.smart.travel;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +59,10 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         adapter.add(listView2);
         adapter.add(listView3);
         viewPager.setAdapter(adapter);
+
+        TabPageIndicator indicator = (TabPageIndicator)content.findViewById(R.id.tab_indicator);
+        indicator.setViewPager(viewPager);
+
         return content;
     }
 

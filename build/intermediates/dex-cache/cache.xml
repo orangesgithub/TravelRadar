@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="D:\work\TravelRadar\travel\libs\android-support-v4.jar"
+        jar="/home/shenlin/newwork/TravelRadar/travel/build/intermediates/exploded-aar/TravelRadar/library/unspecified/jars/classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="53307dc2bd2b69fd5533458ee11885f55807de4b">
-        <dex dex="D:\work\TravelRadar\travel\build\intermediates\pre-dexed\debug\android-support-v4-62f818f6f0ff67624d65a1ca913b8d53a0d89c94.jar" />
+        sha1="018f51eae240b04fbbdf0a3fac4649873a789a8a">
+        <dex dex="/home/shenlin/newwork/TravelRadar/travel/build/intermediates/pre-dexed/debug/classes-ff109d151d7f26dd9b984ecf32864f1d1812e908.jar" />
     </item>
 
 </items>
