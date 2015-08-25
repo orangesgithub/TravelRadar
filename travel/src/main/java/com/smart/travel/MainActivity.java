@@ -8,6 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int RADAR_INDEX = 0;
@@ -32,6 +37,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
+                .threadPoolSize(3).threadPriority(Thread.NORM_PRIORITY - 2)
+                .memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
+                .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000)).build();
+        ImageLoader.getInstance().init(configuration);
 
         radarButton = (ImageButton)findViewById(R.id.btm_radar_btn);
         tipsButton = (ImageButton)findViewById(R.id.btm_tips_btn);
