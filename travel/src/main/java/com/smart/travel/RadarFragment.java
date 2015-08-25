@@ -106,6 +106,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
             travelItem.setBrief("【国庆出行】5799元，普吉岛7天5晚自由行 - " + i);
             listItems.add(travelItem);
         }
+
         overseasItemAdapter.addData(listItems);
     }
 
@@ -169,8 +170,16 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    listView1.stopRefresh();
-                    listView1.setRefreshTime("刚刚");
+                    if (viewPager.getCurrentItem() == 0) {
+                        listView1.stopRefresh();
+                        listView1.setRefreshTime("刚刚");
+                    }else if (viewPager.getCurrentItem() == 1){
+                        listView2.stopRefresh();
+                        listView2.setRefreshTime("刚刚");
+                    }else if (viewPager.getCurrentItem() == 1){
+                        listView3.stopRefresh();
+                        listView3.setRefreshTime("刚刚");
+                    }
                     break;
                 case 2:
                     List<TravelItem> listItems = new ArrayList<TravelItem>();
@@ -188,10 +197,23 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
                         travelItem.setBrief("【国庆出行】5799元，普吉岛7天5晚自由行 - " + i);
                         listItems.add(travelItem);
                     }
-                    ticketItemAdapter.addData(listItems);
-                    ticketItemAdapter.notifyDataSetChanged();
 
-                    listView1.stopLoadMore();
+                    if (viewPager.getCurrentItem() == 0) {
+                        ticketItemAdapter.addData(listItems);
+                        ticketItemAdapter.notifyDataSetChanged();
+
+                        listView1.stopLoadMore();
+                    }else if (viewPager.getCurrentItem() == 1){
+                        travelItemAdapter.addData(listItems);
+                        travelItemAdapter.notifyDataSetChanged();
+
+                        listView2.stopLoadMore();
+                    }else if (viewPager.getCurrentItem() == 1){
+                        overseasItemAdapter.addData(listItems);
+                        overseasItemAdapter.notifyDataSetChanged();
+
+                        listView3.stopLoadMore();
+                    }
                     break;
                 default:
                     break;
