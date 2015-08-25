@@ -3,4 +3,7 @@
     <color name="title_body">#29B6F6</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_bottom">#EEEEEE</color>
+    <color name="color_search">#E0E0E0</color>
+    <color name="color_text">#BDBDBD</color>
+
 </resources>

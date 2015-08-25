@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton infoButton;
 
     private Button titleRightButton;
+    private TextView titleText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         titleRightButton = (Button)findViewById(R.id.title_right_btn);
         titleRightButton.setOnClickListener(radarFragment);
+
+        titleText = (TextView)findViewById(R.id.title_text);
     }
 
     @Override
@@ -65,19 +69,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btm_radar_btn:
                 setTabSelection(RADAR_INDEX);
-                changeRightTitle(RADAR_INDEX);
+                changeTitle(RADAR_INDEX);
                 break;
             case R.id.btm_tips_btn:
                 setTabSelection(TIPS_INDEX);
-                changeRightTitle(TIPS_INDEX);
+                changeTitle(TIPS_INDEX);
                 break;
             case R.id.btm_search_btn:
                 setTabSelection(SEARCH_INDEX);
-                changeRightTitle(SEARCH_INDEX);
+                changeTitle(SEARCH_INDEX);
                 break;
             case R.id.btm_info_btn:
                 setTabSelection(INFO_INDEX);
-                changeRightTitle(INFO_INDEX);
+                changeTitle(INFO_INDEX);
                 break;
         }
     }
@@ -123,16 +127,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         transaction.commit();
     }
 
-    private void changeRightTitle(int index) {
+    private void changeTitle(int index) {
         switch (index) {
             case RADAR_INDEX:
                 titleRightButton.setVisibility(View.VISIBLE);
+                titleText.setText(R.string.app_name);
                 break;
             case TIPS_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
                 break;
             case SEARCH_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
+                titleText.setText(R.string.radar_search);
                 break;
             case INFO_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
