@@ -5,5 +5,7 @@
     <color name="color_bottom">#EEEEEE</color>
     <color name="color_search">#E0E0E0</color>
     <color name="color_text">#BDBDBD</color>
+    <color name="color_setting_bg">#EEEEEE</color>
+    <color name="color_setting_sep">#E0E0E0</color>
 
 </resources>
