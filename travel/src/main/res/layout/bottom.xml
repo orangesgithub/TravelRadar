@@ -1,88 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@color/color_bottom"
-    android:elevation="4dp">
+    android:layout_height="48dp"
+    android:background="@drawable/bottom_bord"
+    android:elevation="4dp"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="3dp">
+        android:orientation="vertical">
+
         <ImageButton
-            android:layout_width="35dp"
-            android:layout_height="35dp"
             android:id="@+id/btm_radar_btn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="6dp"
             android:background="@drawable/radar"
-            android:scaleType="fitXY"
-            android:layout_gravity="center"/>
+            android:scaleType="fitXY" />
+
         <TextView
+            android:id="@+id/btm_radar_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
             android:text="@string/first_page"
-            android:layout_gravity="center"/>
+            android:textSize="10sp" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="3dp">
+        android:orientation="vertical">
+
         <ImageButton
-            android:layout_width="35dp"
-            android:layout_height="35dp"
             android:id="@+id/btm_tips_btn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="6dp"
             android:background="@drawable/tips"
-            android:scaleType="fitXY"
-            android:layout_gravity="center"/>
+            android:scaleType="fitXY" />
+
         <TextView
+            android:id="@+id/btm_tips_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
             android:text="@string/second_page"
-            android:layout_gravity="center"/>
+            android:textSize="10sp" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="3dp">
+        android:orientation="vertical">
+
         <ImageButton
-            android:layout_width="35dp"
-            android:layout_height="35dp"
             android:id="@+id/btm_search_btn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="6dp"
             android:background="@drawable/search"
-            android:scaleType="fitXY"
-            android:layout_gravity="center"/>
+            android:scaleType="fitXY" />
+
         <TextView
+            android:id="@+id/btm_search_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
             android:text="@string/third_page"
-            android:layout_gravity="center"/>
+            android:textSize="10sp" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="3dp">
+        android:orientation="vertical">
+
         <ImageButton
-            android:layout_width="35dp"
-            android:layout_height="35dp"
             android:id="@+id/btm_info_btn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="6dp"
             android:background="@drawable/info"
-            android:scaleType="fitXY"
-            android:layout_gravity="center"/>
+            android:scaleType="fitXY" />
+
         <TextView
+            android:id="@+id/btm_info_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
             android:text="@string/fourth_page"
-            android:layout_gravity="center"/>
+            android:textSize="10sp" />
     </LinearLayout>
 </LinearLayout>

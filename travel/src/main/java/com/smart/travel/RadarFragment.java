@@ -1,6 +1,7 @@
 package com.smart.travel;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -64,7 +65,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
                 travelItem.setImage("http://pic29.nipic.com/20130524/12724384_214225181194_2.jpg");
             }
             travelItem.setId(i);
-            travelItem.setUrl("http://www.baidu.com");
+            travelItem.setUrl("http://www.163.com");
             travelItem.setFrom("旅行雷达");
             travelItem.setDate(Format.formatDate(new Date(), "yyyy-MM-dd"));
             travelItem.setBrief("【国庆出行】5799元，普吉岛7天5晚自由行 - " + i);
@@ -82,7 +83,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
                 travelItem.setImage("http://www.66666333.com/upload/original/20139251133364.jpg");
             }
             travelItem.setId(i);
-            travelItem.setUrl("http://www.baidu.com");
+            travelItem.setUrl("http://www.163.com");
             travelItem.setFrom("旅行雷达");
             travelItem.setDate(Format.formatDate(new Date(), "yyyy-MM-dd"));
             travelItem.setBrief("【国庆出行】5799元，普吉岛7天5晚自由行 - " + i);
@@ -100,7 +101,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
                 travelItem.setImage("http://pic8.nipic.com/20100629/3015544_135545034988_2.jpg");
             }
             travelItem.setId(i);
-            travelItem.setUrl("http://www.baidu.com");
+            travelItem.setUrl("http://www.163.com");
             travelItem.setFrom("旅行雷达");
             travelItem.setDate(Format.formatDate(new Date(), "yyyy-MM-dd"));
             travelItem.setBrief("【国庆出行】5799元，普吉岛7天5晚自由行 - " + i);
@@ -137,17 +138,47 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
         listView1.setPullLoadEnable(true);
         listView1.setXListViewListener(this);
 
+        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), WebActivity.class);
+                TravelItem travelItem = (TravelItem) ticketItemAdapter.getItem(position);
+                intent.putExtra("url", travelItem.getUrl());
+                startActivity(intent);
+            }
+        });
+
         container2 = getActivity().getLayoutInflater().inflate(R.layout.radar_view_1, null);
         listView2 = (XListView) container2.findViewById(R.id.radar_list_view1);
         listView2.setAdapter(travelItemAdapter);
         listView2.setPullLoadEnable(true);
         listView2.setXListViewListener(this);
 
+        listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), WebActivity.class);
+                TravelItem travelItem = (TravelItem) travelItemAdapter.getItem(position);
+                intent.putExtra("url", travelItem.getUrl());
+                startActivity(intent);
+            }
+        });
+
         container3 = getActivity().getLayoutInflater().inflate(R.layout.radar_view_1, null);
         listView3 = (XListView) container3.findViewById(R.id.radar_list_view1);
         listView3.setAdapter(overseasItemAdapter);
         listView3.setPullLoadEnable(true);
         listView3.setXListViewListener(this);
+
+        listView3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), WebActivity.class);
+                TravelItem travelItem = (TravelItem) overseasItemAdapter.getItem(position);
+                intent.putExtra("url", travelItem.getUrl());
+                startActivity(intent);
+            }
+        });
 
         adapter.add(container1);
         adapter.add(container2);
@@ -176,7 +207,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
                     }else if (viewPager.getCurrentItem() == 1){
                         listView2.stopRefresh();
                         listView2.setRefreshTime("刚刚");
-                    }else if (viewPager.getCurrentItem() == 1){
+                    }else if (viewPager.getCurrentItem() == 2){
                         listView3.stopRefresh();
                         listView3.setRefreshTime("刚刚");
                     }
@@ -208,7 +239,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
                         travelItemAdapter.notifyDataSetChanged();
 
                         listView2.stopLoadMore();
-                    }else if (viewPager.getCurrentItem() == 1){
+                    }else if (viewPager.getCurrentItem() == 2){
                         overseasItemAdapter.addData(listItems);
                         overseasItemAdapter.notifyDataSetChanged();
 

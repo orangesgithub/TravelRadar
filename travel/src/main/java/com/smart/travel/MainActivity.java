@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -31,6 +32,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton tipsButton;
     private ImageButton searchButton;
     private ImageButton infoButton;
+    private TextView radarText;
+    private TextView tipsText;
+    private TextView searchText;
+    private TextView infoText;
+
 
     private Button titleRightButton;
     private TextView titleText;
@@ -46,43 +52,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000)).build();
         ImageLoader.getInstance().init(configuration);
 
-        radarButton = (ImageButton)findViewById(R.id.btm_radar_btn);
-        tipsButton = (ImageButton)findViewById(R.id.btm_tips_btn);
-        searchButton = (ImageButton)findViewById(R.id.btm_search_btn);
+        radarButton = (ImageButton) findViewById(R.id.btm_radar_btn);
+        tipsButton = (ImageButton) findViewById(R.id.btm_tips_btn);
+        searchButton = (ImageButton) findViewById(R.id.btm_search_btn);
         infoButton = (ImageButton) findViewById(R.id.btm_info_btn);
+        radarText = (TextView) findViewById(R.id.btm_radar_text);
+        tipsText = (TextView) findViewById(R.id.btm_tips_text);
+        searchText = (TextView) findViewById(R.id.btm_search_text);
+        infoText = (TextView) findViewById(R.id.btm_info_text);
+
+        LinearLayout radarParent = (LinearLayout) radarButton.getParent();
+        radarParent.setOnClickListener(this);
+        LinearLayout tipsParent = (LinearLayout) tipsButton.getParent();
+        tipsParent.setOnClickListener(this);
+        LinearLayout searchParent = (LinearLayout) searchButton.getParent();
+        searchParent.setOnClickListener(this);
+        LinearLayout infoParent = (LinearLayout) infoButton.getParent();
+        infoParent.setOnClickListener(this);
 
         radarButton.setOnClickListener(this);
         tipsButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
         infoButton.setOnClickListener(this);
+        radarText.setOnClickListener(this);
+        tipsText.setOnClickListener(this);
+        searchText.setOnClickListener(this);
+        infoText.setOnClickListener(this);
         // show the first page
         setTabSelection(RADAR_INDEX);
 
-        titleRightButton = (Button)findViewById(R.id.title_right_btn);
+        titleRightButton = (Button) findViewById(R.id.title_right_btn);
         titleRightButton.setOnClickListener(radarFragment);
 
-        titleText = (TextView)findViewById(R.id.title_text);
+        titleText = (TextView) findViewById(R.id.title_text);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btm_radar_btn:
-                setTabSelection(RADAR_INDEX);
-                changeTitle(RADAR_INDEX);
-                break;
-            case R.id.btm_tips_btn:
-                setTabSelection(TIPS_INDEX);
-                changeTitle(TIPS_INDEX);
-                break;
-            case R.id.btm_search_btn:
-                setTabSelection(SEARCH_INDEX);
-                changeTitle(SEARCH_INDEX);
-                break;
-            case R.id.btm_info_btn:
-                setTabSelection(INFO_INDEX);
-                changeTitle(INFO_INDEX);
-                break;
+        if (v == radarButton || v == radarButton.getParent() || v == radarText) {
+            setTabSelection(RADAR_INDEX);
+            changeTitle(RADAR_INDEX);
+        } else if (v == tipsButton || v == tipsButton.getParent() || v == tipsText) {
+            setTabSelection(TIPS_INDEX);
+            changeTitle(TIPS_INDEX);
+        } else if (v == searchButton || v == searchButton.getParent() || v == searchText) {
+            setTabSelection(SEARCH_INDEX);
+            changeTitle(SEARCH_INDEX);
+        } else if (v == infoButton || v == infoButton.getParent() || v == infoText) {
+            setTabSelection(INFO_INDEX);
+            changeTitle(INFO_INDEX);
         }
     }
 
@@ -92,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         hideFragments(transaction);
         switch (index) {
             case RADAR_INDEX:
-                if(radarFragment == null) {
+                if (radarFragment == null) {
                     radarFragment = new RadarFragment();
                     transaction.add(R.id.fragment_container, radarFragment);
                 } else {
@@ -100,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case TIPS_INDEX:
-                if(tipsFragment == null) {
+                if (tipsFragment == null) {
                     tipsFragment = new TipsFragment();
                     transaction.add(R.id.fragment_container, tipsFragment);
                 } else {
@@ -108,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case SEARCH_INDEX:
-                if(searchFragment == null) {
+                if (searchFragment == null) {
                     searchFragment = new SearchFragment();
                     transaction.add(R.id.fragment_container, searchFragment);
                 } else {
@@ -116,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case INFO_INDEX:
-                if(infoFragment == null) {
+                if (infoFragment == null) {
                     infoFragment = new InfoFragment();
                     transaction.add(R.id.fragment_container, infoFragment);
                 } else {
