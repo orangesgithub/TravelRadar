@@ -1,0 +1,16 @@
+TravelRadar.iml
+gradlew
+travel/build.gradle
+travel/travel.iml
+
+.gradle/
+.idea/
+build/
+gradle/
+library/build/
+local.properties
+travel/.idea/
+travel/gradle/
+travel/gradlew
+travel/gradlew.bat
+travel/local.properties
