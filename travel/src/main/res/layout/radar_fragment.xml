@@ -12,7 +12,7 @@
             android:layout_height="wrap_content">
             <com.smart.travel.view.ScrollViewFlipper
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:id="@+id/image_flipper"
                 android:flipInterval="4000"
                 android:autoStart="true"
