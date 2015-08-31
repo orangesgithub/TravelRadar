@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_search">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_margin="7dp"
-        android:id="@+id/search_text"
-        android:padding="2dp"
-        android:background="@drawable/search_bord"
-        android:textSize="13sp"
-        android:hint="@string/search"
-        android:singleLine="true"
-        android:gravity="center"
-        android:imeOptions="actionSearch"
-        android:drawableRight="@drawable/search_24"/>
+
+        <EditText
+            android:id="@+id/search_text"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_margin="7dp"
+            android:background="@drawable/search_bord"
+            android:drawableRight="@drawable/search_24"
+            android:gravity="center"
+            android:hint="@string/search"
+            android:imeOptions="actionSearch"
+            android:padding="2dp"
+            android:singleLine="true"
+            android:textSize="13sp" />
     </LinearLayout>
 
-
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:id="@+id/textView"/>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/search_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></LinearLayout>
+    </ScrollView>
 </LinearLayout>

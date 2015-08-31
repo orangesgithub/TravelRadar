@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
                 .threadPoolSize(3).threadPriority(Thread.NORM_PRIORITY - 2)
-                .memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
+                .memoryCache(new UsingFreqLimitedMemoryCache(20 * 1024 * 1024))
                 .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000)).build();
         ImageLoader.getInstance().init(configuration);
 

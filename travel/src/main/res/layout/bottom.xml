@@ -17,7 +17,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/radar"
             android:scaleType="fitXY" />
 
@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="3dp"
             android:text="@string/first_page"
             android:textSize="10sp" />
     </LinearLayout>
@@ -42,7 +41,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/tips"
             android:scaleType="fitXY" />
 
@@ -51,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="3dp"
             android:text="@string/second_page"
             android:textSize="10sp" />
     </LinearLayout>
@@ -67,7 +65,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/search"
             android:scaleType="fitXY" />
 
@@ -76,7 +74,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="3dp"
             android:text="@string/third_page"
             android:textSize="10sp" />
     </LinearLayout>
@@ -92,7 +89,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/info"
             android:scaleType="fitXY" />
 
@@ -101,7 +98,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="3dp"
             android:text="@string/fourth_page"
             android:textSize="10sp" />
     </LinearLayout>

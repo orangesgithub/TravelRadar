@@ -3,11 +3,13 @@ package com.smart.travel.model;
 public class TravelItem {
 
     private int id;
-    private String url;
+    private String title;
+    private String pubdate;
     private String image;
-    private String from;
-    private String date;
-    private String brief;
+    private String url;
+    private String type;
+    private String author;
+    private int showType;
 
     public int getId() {
         return id;
@@ -17,12 +19,20 @@ public class TravelItem {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
+    public String getTitle() {
+        return title;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPubdate() {
+        return pubdate;
+    }
+
+    public void setPubdate(String pubdate) {
+        this.pubdate = pubdate;
     }
 
     public String getImage() {
@@ -33,27 +43,35 @@ public class TravelItem {
         this.image = image;
     }
 
-    public String getFrom() {
-        return from;
+    public String getUrl() {
+        return url;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getDate() {
-        return date;
+    public String getType() {
+        return type;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getBrief() {
-        return brief;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setBrief(String brief) {
-        this.brief = brief;
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public int getShowType() {
+        return showType;
+    }
+
+    public void setShowType(int showType) {
+        this.showType = showType;
     }
 }

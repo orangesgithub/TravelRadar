@@ -67,9 +67,9 @@ public class TravelItemListViewAdapter extends BaseAdapter {
         TextView dateTextView = (TextView) convertView.findViewById(R.id.date);
         TextView briefTextView = (TextView) convertView.findViewById(R.id.brief);
 
-        fromTextView.setText(item.getFrom());
-        dateTextView.setText(item.getDate());
-        briefTextView.setText(item.getBrief());
+        fromTextView.setText(item.getAuthor());
+        dateTextView.setText(item.getPubdate());
+        briefTextView.setText(item.getTitle());
 
 
         ImageLoader.getInstance().displayImage(item.getImage(), imageView, options);
