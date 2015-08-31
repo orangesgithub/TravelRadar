@@ -14,11 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ViewFlipper;
 
 import com.smart.travel.adapter.TravelItemListViewAdapter;
 import com.smart.travel.model.TravelItem;
 import com.smart.travel.utils.Format;
+import com.smart.travel.view.ScrollViewFlipper;
 import com.smart.travel.view.XListView;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -188,6 +191,10 @@ public class RadarFragment extends Fragment implements View.OnClickListener, XLi
         TabPageIndicator indicator = (TabPageIndicator) content.findViewById(R.id.tab_indicator);
         indicator.setViewPager(viewPager);
 
+
+        LinearLayout flipperIndicator = (LinearLayout)content.findViewById(R.id.flipper_indicator);
+        ScrollViewFlipper imageFlipper = (ScrollViewFlipper)content.findViewById(R.id.image_flipper);
+        imageFlipper.setIndicator(flipperIndicator);
         return content;
     }
 

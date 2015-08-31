@@ -7,6 +7,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.smart.travel.view.ScrollViewFlipper
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/image_flipper"
+                android:flipInterval="4000"
+                android:autoStart="true"
+                android:inAnimation="@anim/flipper_left_in"
+                android:outAnimation="@anim/flipper_left_out">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/flipper_default"
+                    android:scaleType="fitXY"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/circled_26"
+                    android:scaleType="fitXY"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/radar"
+                    android:scaleType="fitXY"/>
+            </com.smart.travel.view.ScrollViewFlipper>
+            <LinearLayout
+                android:id="@+id/flipper_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:gravity="right"
+                android:layout_alignBottom="@id/image_flipper"
+                android:layout_alignRight="@id/image_flipper"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/title_body"/>
         <com.viewpagerindicator.TabPageIndicator
             android:id="@+id/tab_indicator"
             android:layout_width="match_parent"
@@ -26,6 +67,7 @@
                 <!--android:background="@color/color_white"-->
                 <!--android:elevation="1dp"/>-->
         </android.support.v4.view.ViewPager>
+
     </LinearLayout>
     <!-- The navigation drawer -->
     <ListView android:id="@+id/right_drawer"

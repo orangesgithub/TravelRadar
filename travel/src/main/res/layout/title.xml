@@ -43,6 +43,6 @@
             style="?android:attr/borderlessButtonStyle"
             android:text="@string/start_city"
             android:paddingTop="3dp"
-            android:gravity="center|right" />
+            android:gravity="bottom|right" />
     </LinearLayout>
 </LinearLayout>
