@@ -16,8 +16,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.smart.travel.R;
 import com.smart.travel.model.TravelItem;
 
-public class TravelItemListViewAdapter extends BaseAdapter {
-    private static final String TAG = "TravelItemListViewAdapter";
+public class TravelListViewAdapter extends BaseAdapter {
+    private static final String TAG = "TravelListViewAdapter";
 
     private Context context;
     private List<TravelItem> listItems = new ArrayList<TravelItem>();
@@ -26,7 +26,7 @@ public class TravelItemListViewAdapter extends BaseAdapter {
     private DisplayImageOptions options = new DisplayImageOptions.Builder().
             showImageOnLoading(R.drawable.loading).showImageOnFail(R.drawable.loading).cacheInMemory(true).build();
 
-    public TravelItemListViewAdapter(Context context) {
+    public TravelListViewAdapter(Context context) {
         this.context = context;
         this.listContainer = LayoutInflater.from(context);
     }

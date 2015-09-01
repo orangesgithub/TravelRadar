@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int INFO_INDEX = 3;
 
     private RadarFragment radarFragment;
-    private TipsFragment tipsFragment;
+    private FinderFragment tipsFragment;
     private SearchFragment searchFragment;
     private InfoFragment infoFragment;
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case TIPS_INDEX:
                 if (tipsFragment == null) {
-                    tipsFragment = new TipsFragment();
+                    tipsFragment = new FinderFragment();
                     transaction.add(R.id.fragment_container, tipsFragment);
                 } else {
                     transaction.show(tipsFragment);
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case TIPS_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
+                titleText.setText(R.string.second_title);
                 break;
             case SEARCH_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case INFO_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
+                titleText.setText(R.string.fourth_page);
                 break;
         }
     }

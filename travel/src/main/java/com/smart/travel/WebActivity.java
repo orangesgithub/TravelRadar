@@ -10,6 +10,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class WebActivity extends AppCompatActivity {
 
@@ -24,11 +25,15 @@ public class WebActivity extends AppCompatActivity {
         setContentView(R.layout.activity_web);
 
         String url = getIntent().getStringExtra("url");
+        String title = getIntent().getStringExtra("title");
 
         Log.d(TAG, "url: " + url);
 
         webView = (WebView) findViewById(R.id.radar_webview);
         progressBar = (ProgressBar) findViewById(R.id.radar_webview_pb);
+
+        TextView textTitle = (TextView) findViewById(R.id.title_text);
+        textTitle.setText(title);
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSupportZoom(true);

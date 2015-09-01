@@ -4,7 +4,8 @@
     <string name="radar_search">雷达搜索</string>
 
     <string name="first_page">首页</string>
-    <string name="second_page">社区</string>
+    <string name="second_page">锦囊</string>
+    <string name="second_title">旅行锦囊</string>
     <string name="third_page">搜索</string>
     <string name="fourth_page">设置</string>
 

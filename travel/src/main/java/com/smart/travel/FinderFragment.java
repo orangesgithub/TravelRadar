@@ -1,11 +1,11 @@
 package com.smart.travel;
 
+
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,41 +13,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import com.smart.travel.adapter.TravelListViewAdapter;
-import com.smart.travel.model.TravelItem;
-import com.smart.travel.net.TicketLoader;
+import com.smart.travel.adapter.FinderListViewAdapter;
+import com.smart.travel.model.RadarItem;
+import com.smart.travel.net.FinderLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;
 
-import static android.R.layout.simple_list_item_1;
+public class FinderFragment extends Fragment {
+    private static final String TAG = "FinderFragment";
 
+    private static final int MESSAGE_LOADMORE = 1;
+    private static final int MESSAGE_REFRESH = 2;
 
-public class RadarFragment extends Fragment implements View.OnClickListener {
-    private static final int MESSAGE_TICKET_LOADMORE = 1;
-    private static final int MESSAGE_TICKET_REFRESH = 2;
+    private ListView finderListView;
+    private FinderListViewAdapter finderListViewAdapter;
 
-    private DrawerLayout drawerLayout;
-    private ListView drawerList;
-    private String[] drawerListItems;
+    private int currPage = 0;
 
-    private static final String TAG = "RadarFragment";
+    private List<RadarItem> finderListItems;
 
-    private TravelListViewAdapter ticketAdapter;
-
-    private ListView ticketListView;
-
-    private int ticketCurrPage = 0;
-
-    private List<TravelItem> ticketListItems;
 
     private LinearLayout footerViewLoading;
     private int lastItem;
@@ -56,29 +46,13 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        finderListViewAdapter = new FinderListViewAdapter(getActivity());
         super.onCreate(savedInstanceState);
-
-        ticketAdapter = new TravelListViewAdapter(getActivity());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        drawerListItems = getResources().getStringArray(R.array.city_list);
-
-        // Inflate the layout for this fragment
-        View content = inflater.inflate(R.layout.radar_fragment, container, false);
-        drawerLayout = (DrawerLayout) content.findViewById(R.id.drawer_layout);
-        drawerList = (ListView) content.findViewById(R.id.right_drawer);
-        drawerList.setAdapter(new ArrayAdapter<>(getActivity(), simple_list_item_1, drawerListItems));
-
-        // set click listener for the drawerList
-        drawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                drawerLayout.closeDrawers();
-            }
-        });
-
+        View content = inflater.inflate(R.layout.finder_fragment, container, false);
         final PullToRefreshView pullToRefreshView = (PullToRefreshView) content.findViewById(R.id.pull_to_refresh);
         pullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
@@ -92,16 +66,16 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        ticketListView = (ListView) pullToRefreshView.findViewById(R.id.radar_list_view);
-        ticketListView.setAdapter(ticketAdapter);
+        finderListView = (ListView) pullToRefreshView.findViewById(R.id.finder_list_view);
+        finderListView.setAdapter(finderListViewAdapter);
 
-        ticketListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        finderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                TravelItem travelItem = (TravelItem) ticketAdapter.getItem(position);
-                intent.putExtra("url", travelItem.getUrl());
-                intent.putExtra("title", travelItem.getAuthor());
+                RadarItem radarItem = (RadarItem) finderListViewAdapter.getItem(position);
+                intent.putExtra("url", radarItem.getUrl());
+                intent.putExtra("title", radarItem.getAuthor());
                 startActivity(intent);
             }
         });
@@ -114,26 +88,26 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ticketListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        finderListView.setOnScrollListener(new AbsListView.OnScrollListener() {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
                 Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
                 if (!footerViewLoadingVisiable) {
-                    ticketListView.addFooterView(footerViewLoading);
-                    ticketListView.setFooterDividersEnabled(false);
+                    finderListView.addFooterView(footerViewLoading);
+                    finderListView.setFooterDividersEnabled(false);
                     footerViewLoadingVisiable = true;
                 }
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastItem >= ticketAdapter.getCount()
+                if (lastItem >= finderListViewAdapter.getCount()
                         && scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && !isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "start to pull new list");
-                    ticketAdapter.notifyDataSetChanged();
+                    finderListViewAdapter.notifyDataSetChanged();
                     loadMore();
                 }
             }
@@ -145,16 +119,16 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MESSAGE_TICKET_REFRESH:
+                case MESSAGE_REFRESH:
                     break;
-                case MESSAGE_TICKET_LOADMORE:
-                    ticketListView.removeFooterView(footerViewLoading);
-                    ticketListView.setFooterDividersEnabled(true);
+                case MESSAGE_LOADMORE:
+                    finderListView.removeFooterView(footerViewLoading);
+                    finderListView.setFooterDividersEnabled(true);
                     footerViewLoadingVisiable = false;
                     isLoadingData = false;
-                    ticketAdapter.addData(ticketListItems);
-                    ticketListItems = null;
-                    ticketAdapter.notifyDataSetChanged();
+                    finderListViewAdapter.addData(finderListItems);
+                    finderListItems = null;
+                    finderListViewAdapter.notifyDataSetChanged();
                     break;
                 default:
                     break;
@@ -163,22 +137,13 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     };
 
-    @Override
-    public void onClick(View v) {
-        if (drawerLayout.isDrawerOpen(drawerList)) {
-            drawerLayout.closeDrawers();
-        } else {
-            drawerLayout.openDrawer(drawerList);
-        }
-    }
-
     private void loadMore() {
         new Thread() {
             @Override
             public void run() {
                 try {
-                    ticketListItems = TicketLoader.load(ticketCurrPage++);
-                    handler.sendEmptyMessage(MESSAGE_TICKET_LOADMORE);
+                    finderListItems = FinderLoader.load(currPage++);
+                    handler.sendEmptyMessage(MESSAGE_LOADMORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                 }
