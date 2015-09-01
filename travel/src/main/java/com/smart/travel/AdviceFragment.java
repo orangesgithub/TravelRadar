@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.smart.travel.adapter.FinderListViewAdapter;
+import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.AdviceLoader;
 import com.yalantis.phoenix.PullToRefreshView;
@@ -28,16 +28,15 @@ import java.util.List;
 public class AdviceFragment extends Fragment {
     private static final String TAG = "AdviceFragment";
 
-    private static final int MESSAGE_LOADMORE = 1;
+    private static final int MESSAGE_LOAD_MORE = 1;
     private static final int MESSAGE_REFRESH = 2;
 
-    private ListView finderListView;
-    private FinderListViewAdapter finderListViewAdapter;
+    private ListView adviceListView;
+    private AdviceListViewAdapter adviceListViewAdapter;
 
     private int currPage = 0;
 
-    private List<RadarItem> finderListItems;
-
+    private List<RadarItem> adviceListItems;
 
     private LinearLayout footerViewLoading;
     private int lastItem;
@@ -46,7 +45,7 @@ public class AdviceFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        finderListViewAdapter = new FinderListViewAdapter(getActivity());
+        adviceListViewAdapter = new AdviceListViewAdapter(getActivity());
         super.onCreate(savedInstanceState);
     }
 
@@ -66,14 +65,14 @@ public class AdviceFragment extends Fragment {
             }
         });
 
-        finderListView = (ListView) pullToRefreshView.findViewById(R.id.finder_list_view);
-        finderListView.setAdapter(finderListViewAdapter);
+        adviceListView = (ListView) pullToRefreshView.findViewById(R.id.finder_list_view);
+        adviceListView.setAdapter(adviceListViewAdapter);
 
-        finderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                RadarItem radarItem = (RadarItem) finderListViewAdapter.getItem(position);
+                RadarItem radarItem = (RadarItem) adviceListViewAdapter.getItem(position);
                 intent.putExtra("url", radarItem.getUrl());
                 intent.putExtra("title", radarItem.getAuthor());
                 startActivity(intent);
@@ -88,26 +87,26 @@ public class AdviceFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        finderListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        adviceListView.setOnScrollListener(new AbsListView.OnScrollListener() {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
                 Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
-                if (!footerViewLoadingVisiable) {
-                    finderListView.addFooterView(footerViewLoading);
-                    finderListView.setFooterDividersEnabled(false);
+                if (!footerViewLoadingVisiable && totalItemCount > visibleItemCount) {
+                    adviceListView.addFooterView(footerViewLoading);
+                    adviceListView.setFooterDividersEnabled(false);
                     footerViewLoadingVisiable = true;
                 }
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastItem >= finderListViewAdapter.getCount()
+                if (lastItem >= adviceListViewAdapter.getCount() && footerViewLoadingVisiable
                         && scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && !isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "start to pull new list");
-                    finderListViewAdapter.notifyDataSetChanged();
+                    adviceListViewAdapter.notifyDataSetChanged();
                     loadMore();
                 }
             }
@@ -121,14 +120,14 @@ public class AdviceFragment extends Fragment {
             switch (msg.what) {
                 case MESSAGE_REFRESH:
                     break;
-                case MESSAGE_LOADMORE:
-                    finderListView.removeFooterView(footerViewLoading);
-                    finderListView.setFooterDividersEnabled(true);
+                case MESSAGE_LOAD_MORE:
+                    adviceListView.removeFooterView(footerViewLoading);
+                    adviceListView.setFooterDividersEnabled(true);
                     footerViewLoadingVisiable = false;
                     isLoadingData = false;
-                    finderListViewAdapter.addData(finderListItems);
-                    finderListItems = null;
-                    finderListViewAdapter.notifyDataSetChanged();
+                    adviceListViewAdapter.addData(adviceListItems);
+                    adviceListItems = null;
+                    adviceListViewAdapter.notifyDataSetChanged();
                     break;
                 default:
                     break;
@@ -142,8 +141,8 @@ public class AdviceFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    finderListItems = AdviceLoader.load(currPage++);
-                    handler.sendEmptyMessage(MESSAGE_LOADMORE);
+                    adviceListItems = AdviceLoader.load(currPage++);
+                    handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                 }

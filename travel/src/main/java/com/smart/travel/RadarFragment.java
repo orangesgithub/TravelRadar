@@ -30,8 +30,8 @@ import static android.R.layout.simple_list_item_1;
 
 
 public class RadarFragment extends Fragment implements View.OnClickListener {
-    private static final int MESSAGE_TICKET_LOADMORE = 1;
-    private static final int MESSAGE_TICKET_REFRESH = 2;
+    private static final int MESSAGE_LOAD_MORE = 1;
+    private static final int MESSAGE_REFRESH = 2;
 
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -74,6 +74,9 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 drawerLayout.closeDrawers();
+                Intent intent = new Intent(getActivity(), SearchResultActivity.class);
+                intent.putExtra("keyword", drawerListItems[position]);
+                startActivity(intent);
             }
         });
 
@@ -118,7 +121,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
                 Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
-                if (!footerViewLoadingVisiable) {
+                if (!footerViewLoadingVisiable && totalItemCount > visibleItemCount) {
                     ticketListView.addFooterView(footerViewLoading);
                     ticketListView.setFooterDividersEnabled(false);
                     footerViewLoadingVisiable = true;
@@ -127,7 +130,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastItem >= ticketAdapter.getCount()
+                if (lastItem >= ticketAdapter.getCount() && footerViewLoadingVisiable
                         && scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && !isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "start to pull new list");
@@ -143,9 +146,9 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MESSAGE_TICKET_REFRESH:
+                case MESSAGE_REFRESH:
                     break;
-                case MESSAGE_TICKET_LOADMORE:
+                case MESSAGE_LOAD_MORE:
                     ticketListView.removeFooterView(footerViewLoading);
                     ticketListView.setFooterDividersEnabled(true);
                     footerViewLoadingVisiable = false;
@@ -176,7 +179,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 try {
                     ticketListItems = TicketLoader.load(ticketCurrPage++);
-                    handler.sendEmptyMessage(MESSAGE_TICKET_LOADMORE);
+                    handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                 }
@@ -184,13 +187,13 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         }.start();
     }
 
-    private void doRefresh(){
+    private void doRefresh() {
         new Thread() {
             @Override
             public void run() {
                 try {
                     ticketListItems = TicketLoader.load(ticketCurrPage++);
-                    handler.sendEmptyMessage(MESSAGE_TICKET_LOADMORE);
+                    handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                 }

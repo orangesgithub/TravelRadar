@@ -23,8 +23,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".SearchResultActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name=".WebActivity"
-            android:label="@string/title_activity_web"
             android:screenOrientation="portrait"></activity>
     </application>
 

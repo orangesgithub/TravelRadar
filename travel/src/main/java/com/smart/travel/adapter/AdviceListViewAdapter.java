@@ -16,8 +16,8 @@ import com.smart.travel.model.RadarItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FinderListViewAdapter extends BaseAdapter {
-    private static final String TAG = "FinderListViewAdapter";
+public class AdviceListViewAdapter extends BaseAdapter {
+    private static final String TAG = "AdviceListViewAdapter";
 
     private Context context;
     private List<RadarItem> listItems = new ArrayList<RadarItem>();
@@ -26,7 +26,7 @@ public class FinderListViewAdapter extends BaseAdapter {
     private DisplayImageOptions options = new DisplayImageOptions.Builder().
             showImageOnLoading(R.drawable.loading).showImageOnFail(R.drawable.loading).cacheInMemory(true).build();
 
-    public FinderListViewAdapter(Context context) {
+    public AdviceListViewAdapter(Context context) {
         this.context = context;
         this.listContainer = LayoutInflater.from(context);
     }

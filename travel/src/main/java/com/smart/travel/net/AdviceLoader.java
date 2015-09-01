@@ -22,6 +22,11 @@ public class AdviceLoader {
 
         JSONObject parentObj = new JSONObject(jsonString);
         JSONObject variablesObj = parentObj.getJSONObject("Variables");
+
+        if (!variablesObj.has("data")) {
+            return listItems;
+        }
+
         JSONArray jsonArray = variablesObj.getJSONArray("data");
 
         for (int i = 0; i < jsonArray.length(); i++) {

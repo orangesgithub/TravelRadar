@@ -1,5 +1,7 @@
 package com.smart.travel.net;
 
+import android.util.Log;
+
 import com.smart.travel.model.RadarItem;
 
 import org.json.JSONArray;
@@ -12,18 +14,22 @@ import java.util.List;
 /**
  * Created by yfan10x on 2015/8/31.
  */
-public class TicketLoader {
+public class SearchLoader {
 
-    public static List<RadarItem> load(int page) throws Exception {
+    private static final String TAG = "SearchLoader";
+
+    public static List<RadarItem> load(int page, String keyword) throws Exception {
         HttpRequest request = new HttpRequest();
-        String jsonString = request.doGet("http://121.40.165.84/travel//Index/get_travel_v2?p=" + page + "&tab=type:" + URLEncoder.encode("特价优惠", "utf-8"));
+        String jsonString = request.doGet("http://121.40.165.84/travel//Index/get_travel_v2?p="
+                + page + "&tab=type:" + URLEncoder.encode("特价优惠", "utf-8")
+                + ";keyword:" + URLEncoder.encode(keyword, "utf-8"));
 
         List<RadarItem> listItems = new ArrayList<>();
 
         JSONObject parentObj = new JSONObject(jsonString);
         JSONObject variablesObj = parentObj.getJSONObject("Variables");
 
-        if (!variablesObj.has("data")) {
+        if (variablesObj.getString("data").trim().equals("null")) {
             return listItems;
         }
 
@@ -40,17 +46,17 @@ public class TicketLoader {
             String author = dataObject.getString("author");
             int showType = dataObject.getInt("show_type");
 
-            RadarItem radarItem = new RadarItem();
-            radarItem.setId(i);
-            radarItem.setTitle(title);
-            radarItem.setPubdate(pubdate);
-            radarItem.setImage(image);
-            radarItem.setUrl(url);
-            radarItem.setType(type);
-            radarItem.setAuthor(author);
-            radarItem.setShowType(showType);
+            RadarItem item = new RadarItem();
+            item.setId(i);
+            item.setTitle(title);
+            item.setPubdate(pubdate);
+            item.setImage(image);
+            item.setUrl(url);
+            item.setType(type);
+            item.setAuthor(author);
+            item.setShowType(showType);
 
-            listItems.add(radarItem);
+            listItems.add(item);
         }
 
         return listItems;

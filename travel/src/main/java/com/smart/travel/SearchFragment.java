@@ -3,6 +3,7 @@ package com.smart.travel;
 
 import android.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.smart.travel.model.RadarItem;
 import com.smart.travel.model.SearchItem;
 import com.smart.travel.utils.DensityUtil;
 
@@ -150,6 +152,10 @@ public class SearchFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         textView2.setBackgroundResource(R.drawable.search_item_click);
+                        Intent intent = new Intent(getActivity(), SearchResultActivity.class);
+                        TextView tv = (TextView) v;
+                        intent.putExtra("keyword", tv.getText());
+                        startActivity(intent);
                     }
                 });
 
