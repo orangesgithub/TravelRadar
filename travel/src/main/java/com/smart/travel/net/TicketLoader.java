@@ -1,6 +1,6 @@
 package com.smart.travel.net;
 
-import com.smart.travel.model.TravelItem;
+import com.smart.travel.model.RadarItem;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class TicketLoader {
 
-    public static List<TravelItem> load(int page) throws Exception {
+    public static List<RadarItem> load(int page) throws Exception {
         HttpRequest request = new HttpRequest();
         String jsonString = request.doGet("http://121.40.165.84/travel//Index/get_travel_v2?p=" + page + "&tab=type:" + URLEncoder.encode("特价优惠", "utf-8"));
 
-        List<TravelItem> listItems = new ArrayList<>();
+        List<RadarItem> listItems = new ArrayList<>();
 
         JSONObject parentObj = new JSONObject(jsonString);
         JSONObject variablesObj = parentObj.getJSONObject("Variables");
@@ -35,17 +35,17 @@ public class TicketLoader {
             String author = dataObject.getString("author");
             int showType = dataObject.getInt("show_type");
 
-            TravelItem travelItem = new TravelItem();
-            travelItem.setId(i);
-            travelItem.setTitle(title);
-            travelItem.setPubdate(pubdate);
-            travelItem.setImage(image);
-            travelItem.setUrl(url);
-            travelItem.setType(type);
-            travelItem.setAuthor(author);
-            travelItem.setShowType(showType);
+            RadarItem radarItem = new RadarItem();
+            radarItem.setId(i);
+            radarItem.setTitle(title);
+            radarItem.setPubdate(pubdate);
+            radarItem.setImage(image);
+            radarItem.setUrl(url);
+            radarItem.setType(type);
+            radarItem.setAuthor(author);
+            radarItem.setShowType(showType);
 
-            listItems.add(travelItem);
+            listItems.add(radarItem);
         }
 
         return listItems;

@@ -20,13 +20,13 @@ import android.widget.TextView;
 
 import com.smart.travel.adapter.FinderListViewAdapter;
 import com.smart.travel.model.RadarItem;
-import com.smart.travel.net.FinderLoader;
+import com.smart.travel.net.AdviceLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;
 
-public class FinderFragment extends Fragment {
-    private static final String TAG = "FinderFragment";
+public class AdviceFragment extends Fragment {
+    private static final String TAG = "AdviceFragment";
 
     private static final int MESSAGE_LOADMORE = 1;
     private static final int MESSAGE_REFRESH = 2;
@@ -52,7 +52,7 @@ public class FinderFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View content = inflater.inflate(R.layout.finder_fragment, container, false);
+        View content = inflater.inflate(R.layout.advice_fragment, container, false);
         final PullToRefreshView pullToRefreshView = (PullToRefreshView) content.findViewById(R.id.pull_to_refresh);
         pullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
@@ -142,7 +142,7 @@ public class FinderFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    finderListItems = FinderLoader.load(currPage++);
+                    finderListItems = AdviceLoader.load(currPage++);
                     handler.sendEmptyMessage(MESSAGE_LOADMORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);

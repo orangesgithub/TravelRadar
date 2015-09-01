@@ -59,7 +59,7 @@ public class FinderListViewAdapter extends BaseAdapter {
         RadarItem item = listItems.get(position);
 
         if (convertView == null) {
-            convertView = listContainer.inflate(R.layout.list_finder_item, null);
+            convertView = listContainer.inflate(R.layout.list_advice_item, null);
         }
 
         final ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);

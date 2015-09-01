@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by yfan10x on 2015/8/31.
  */
-public class FinderLoader {
+public class AdviceLoader {
 
     public static List<RadarItem> load(int page) throws Exception {
         HttpRequest request = new HttpRequest();

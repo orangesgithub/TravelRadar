@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.smart.travel.R;
-import com.smart.travel.model.TravelItem;
+import com.smart.travel.model.RadarItem;
 
 public class TravelListViewAdapter extends BaseAdapter {
     private static final String TAG = "TravelListViewAdapter";
 
     private Context context;
-    private List<TravelItem> listItems = new ArrayList<TravelItem>();
+    private List<RadarItem> listItems = new ArrayList<>();
     private LayoutInflater listContainer;
 
     private DisplayImageOptions options = new DisplayImageOptions.Builder().
@@ -31,11 +31,11 @@ public class TravelListViewAdapter extends BaseAdapter {
         this.listContainer = LayoutInflater.from(context);
     }
 
-    public void addData(List<TravelItem> items) {
+    public void addData(List<RadarItem> items) {
         this.listItems.addAll(items);
     }
 
-    public List<TravelItem> getAllData() {
+    public List<RadarItem> getAllData() {
         return this.listItems;
     }
 
@@ -56,7 +56,7 @@ public class TravelListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TravelItem item = listItems.get(position);
+        RadarItem item = listItems.get(position);
 
         if (convertView == null) {
             convertView = listContainer.inflate(R.layout.list_travel_item, null);

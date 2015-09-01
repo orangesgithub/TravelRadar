@@ -19,10 +19,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.smart.travel.adapter.TravelListViewAdapter;
-import com.smart.travel.model.TravelItem;
+import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.TicketLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -47,7 +45,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     private int ticketCurrPage = 0;
 
-    private List<TravelItem> ticketListItems;
+    private List<RadarItem> ticketListItems;
 
     private LinearLayout footerViewLoading;
     private int lastItem;
@@ -99,9 +97,9 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                TravelItem travelItem = (TravelItem) ticketAdapter.getItem(position);
-                intent.putExtra("url", travelItem.getUrl());
-                intent.putExtra("title", travelItem.getAuthor());
+                RadarItem radarItem = (RadarItem) ticketAdapter.getItem(position);
+                intent.putExtra("url", radarItem.getUrl());
+                intent.putExtra("title", radarItem.getAuthor());
                 startActivity(intent);
             }
         });
@@ -173,6 +171,20 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadMore() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    ticketListItems = TicketLoader.load(ticketCurrPage++);
+                    handler.sendEmptyMessage(MESSAGE_TICKET_LOADMORE);
+                } catch (Exception e) {
+                    Log.e(TAG, "Radar Http Exception", e);
+                }
+            }
+        }.start();
+    }
+
+    private void doRefresh(){
         new Thread() {
             @Override
             public void run() {

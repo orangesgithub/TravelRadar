@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int INFO_INDEX = 3;
 
     private RadarFragment radarFragment;
-    private FinderFragment tipsFragment;
+    private AdviceFragment tipsFragment;
     private SearchFragment searchFragment;
     private InfoFragment infoFragment;
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case TIPS_INDEX:
                 if (tipsFragment == null) {
-                    tipsFragment = new FinderFragment();
+                    tipsFragment = new AdviceFragment();
                     transaction.add(R.id.fragment_container, tipsFragment);
                 } else {
                     transaction.show(tipsFragment);
