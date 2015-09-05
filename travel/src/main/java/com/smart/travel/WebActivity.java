@@ -1,5 +1,6 @@
 package com.smart.travel;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,13 +10,20 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.smart.travel.utils.UMSocialHelper;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.media.UMImage;
 
 public class WebActivity extends AppCompatActivity {
 
     private WebView webView;
     private ProgressBar progressBar;
+    private ImageButton shareButton;
 
     private static final String TAG = "RadarWebView";
 
@@ -26,8 +34,10 @@ public class WebActivity extends AppCompatActivity {
 
         String url = getIntent().getStringExtra("url");
         String title = getIntent().getStringExtra("title");
+        String image = getIntent().getStringExtra("image");
+        String content = getIntent().getStringExtra("content");
 
-        Log.d(TAG, "url: " + url);
+        Log.d(TAG, "url: " + url + " Image:" + image);
 
         webView = (WebView) findViewById(R.id.radar_webview);
         progressBar = (ProgressBar) findViewById(R.id.radar_webview_pb);
@@ -43,6 +53,16 @@ public class WebActivity extends AppCompatActivity {
         webView.setWebChromeClient(new CustomWebViewClient());
 
         webView.loadUrl(url);
+
+        UMSocialHelper.getInstance().setUp(this);
+        UMSocialHelper.getInstance().setShareContent(title, content, url, new UMImage(this, image));
+        shareButton = (ImageButton) findViewById(R.id.btn_url_share);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UMSocialHelper.getInstance().openShare(false);
+            }
+        });
     }
 
     private class CustomWebViewClient extends WebChromeClient {
@@ -74,7 +94,10 @@ public class WebActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        UMSocialHelper.getInstance().onActivityResult(requestCode, resultCode, data);
     }
 }

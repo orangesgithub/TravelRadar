@@ -103,6 +103,8 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                 RadarItem radarItem = (RadarItem) ticketAdapter.getItem(position);
                 intent.putExtra("url", radarItem.getUrl());
                 intent.putExtra("title", radarItem.getAuthor());
+                intent.putExtra("content", radarItem.getTitle());
+                intent.putExtra("image", radarItem.getImage());
                 startActivity(intent);
             }
         });
