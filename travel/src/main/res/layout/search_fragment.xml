@@ -9,19 +9,13 @@
         android:layout_height="wrap_content"
         android:background="@color/color_search">
 
-        <EditText
+        <com.smart.travel.widget.SearchEditText
             android:id="@+id/search_text"
+            style="@style/editTextStyle"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_margin="7dp"
-            android:background="@drawable/search_bord"
-            android:drawableRight="@drawable/search_24"
-            android:gravity="center"
-            android:hint="@string/search"
-            android:imeOptions="actionSearch"
-            android:padding="2dp"
-            android:singleLine="true"
-            android:textSize="13sp" />
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+
     </LinearLayout>
 
     <ScrollView

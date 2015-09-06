@@ -2,8 +2,10 @@ package com.smart.travel;
 
 
 import android.app.FragmentTransaction;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,26 +19,29 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "MainActivity";
+
     private static final int RADAR_INDEX = 0;
-    private static final int TIPS_INDEX = 1;
+    private static final int ADVICE_INDEX = 1;
     private static final int SEARCH_INDEX = 2;
-    private static final int INFO_INDEX = 3;
+    private static final int SETTINGS_INDEX = 3;
 
     private RadarFragment radarFragment;
-    private AdviceFragment tipsFragment;
+    private AdviceFragment adviceFragment;
     private SearchFragment searchFragment;
-    private InfoFragment infoFragment;
+    private InfoFragment settingsFragment;
 
     // click the following button, switch fragment
     private ImageButton radarButton;
-    private ImageButton tipsButton;
+    private ImageButton adviceButton;
     private ImageButton searchButton;
-    private ImageButton infoButton;
+    private ImageButton settingsButton;
     private TextView radarText;
-    private TextView tipsText;
+    private TextView adviceText;
     private TextView searchText;
-    private TextView infoText;
+    private TextView settingsText;
 
+    private int lastSelectionTab = -1;
 
     private Button titleRightButton;
     private TextView titleText;
@@ -53,31 +58,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ImageLoader.getInstance().init(configuration);
 
         radarButton = (ImageButton) findViewById(R.id.btm_radar_btn);
-        tipsButton = (ImageButton) findViewById(R.id.btm_tips_btn);
+        adviceButton = (ImageButton) findViewById(R.id.btm_tips_btn);
         searchButton = (ImageButton) findViewById(R.id.btm_search_btn);
-        infoButton = (ImageButton) findViewById(R.id.btm_info_btn);
+        settingsButton = (ImageButton) findViewById(R.id.btm_info_btn);
         radarText = (TextView) findViewById(R.id.btm_radar_text);
-        tipsText = (TextView) findViewById(R.id.btm_tips_text);
+        adviceText = (TextView) findViewById(R.id.btm_tips_text);
         searchText = (TextView) findViewById(R.id.btm_search_text);
-        infoText = (TextView) findViewById(R.id.btm_info_text);
+        settingsText = (TextView) findViewById(R.id.btm_info_text);
 
         LinearLayout radarParent = (LinearLayout) radarButton.getParent();
         radarParent.setOnClickListener(this);
-        LinearLayout tipsParent = (LinearLayout) tipsButton.getParent();
+        LinearLayout tipsParent = (LinearLayout) adviceButton.getParent();
         tipsParent.setOnClickListener(this);
         LinearLayout searchParent = (LinearLayout) searchButton.getParent();
         searchParent.setOnClickListener(this);
-        LinearLayout infoParent = (LinearLayout) infoButton.getParent();
+        LinearLayout infoParent = (LinearLayout) settingsButton.getParent();
         infoParent.setOnClickListener(this);
 
         radarButton.setOnClickListener(this);
-        tipsButton.setOnClickListener(this);
+        adviceButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
-        infoButton.setOnClickListener(this);
+        settingsButton.setOnClickListener(this);
         radarText.setOnClickListener(this);
-        tipsText.setOnClickListener(this);
+        adviceText.setOnClickListener(this);
         searchText.setOnClickListener(this);
-        infoText.setOnClickListener(this);
+        settingsText.setOnClickListener(this);
         // show the first page
         setTabSelection(RADAR_INDEX);
 
@@ -92,20 +97,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == radarButton || v == radarButton.getParent() || v == radarText) {
             setTabSelection(RADAR_INDEX);
             changeTitle(RADAR_INDEX);
-        } else if (v == tipsButton || v == tipsButton.getParent() || v == tipsText) {
-            setTabSelection(TIPS_INDEX);
-            changeTitle(TIPS_INDEX);
+        } else if (v == adviceButton || v == adviceButton.getParent() || v == adviceText) {
+            setTabSelection(ADVICE_INDEX);
+            changeTitle(ADVICE_INDEX);
         } else if (v == searchButton || v == searchButton.getParent() || v == searchText) {
             setTabSelection(SEARCH_INDEX);
             changeTitle(SEARCH_INDEX);
-        } else if (v == infoButton || v == infoButton.getParent() || v == infoText) {
-            setTabSelection(INFO_INDEX);
-            changeTitle(INFO_INDEX);
+        } else if (v == settingsButton || v == settingsButton.getParent() || v == settingsText) {
+            setTabSelection(SETTINGS_INDEX);
+            changeTitle(SETTINGS_INDEX);
         }
     }
 
     private void setTabSelection(int index) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        if (lastSelectionTab == RADAR_INDEX) {
+        } else if (lastSelectionTab == ADVICE_INDEX) {
+        } else if (lastSelectionTab == SEARCH_INDEX) {
+        } else if (lastSelectionTab == SETTINGS_INDEX) {
+        }
+
+        if (index == RADAR_INDEX) {
+            lastSelectionTab = RADAR_INDEX;
+        } else if (index == ADVICE_INDEX) {
+            lastSelectionTab = ADVICE_INDEX;
+            Log.d(TAG, "advice index selected");
+        } else if (index == SEARCH_INDEX) {
+            lastSelectionTab = SEARCH_INDEX;
+        } else if (index == SETTINGS_INDEX) {
+            lastSelectionTab = SETTINGS_INDEX;
+        }
 
         hideFragments(transaction);
         switch (index) {
@@ -117,12 +139,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     transaction.show(radarFragment);
                 }
                 break;
-            case TIPS_INDEX:
-                if (tipsFragment == null) {
-                    tipsFragment = new AdviceFragment();
-                    transaction.add(R.id.fragment_container, tipsFragment);
+            case ADVICE_INDEX:
+                if (adviceFragment == null) {
+                    adviceFragment = new AdviceFragment();
+                    transaction.add(R.id.fragment_container, adviceFragment);
                 } else {
-                    transaction.show(tipsFragment);
+                    transaction.show(adviceFragment);
                 }
                 break;
             case SEARCH_INDEX:
@@ -133,12 +155,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     transaction.show(searchFragment);
                 }
                 break;
-            case INFO_INDEX:
-                if (infoFragment == null) {
-                    infoFragment = new InfoFragment();
-                    transaction.add(R.id.fragment_container, infoFragment);
+            case SETTINGS_INDEX:
+                if (settingsFragment == null) {
+                    settingsFragment = new InfoFragment();
+                    transaction.add(R.id.fragment_container, settingsFragment);
                 } else {
-                    transaction.show(infoFragment);
+                    transaction.show(settingsFragment);
                 }
                 break;
         }
@@ -151,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 titleRightButton.setVisibility(View.VISIBLE);
                 titleText.setText(R.string.app_name);
                 break;
-            case TIPS_INDEX:
+            case ADVICE_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
                 titleText.setText(R.string.second_title);
                 break;
@@ -159,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 titleRightButton.setVisibility(View.INVISIBLE);
                 titleText.setText(R.string.radar_search);
                 break;
-            case INFO_INDEX:
+            case SETTINGS_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);
                 titleText.setText(R.string.fourth_page);
                 break;
@@ -168,8 +190,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void hideFragments(FragmentTransaction transaction) {
         if (radarFragment != null) transaction.hide(radarFragment);
-        if (tipsFragment != null) transaction.hide(tipsFragment);
+        if (adviceFragment != null) transaction.hide(adviceFragment);
         if (searchFragment != null) transaction.hide(searchFragment);
-        if (infoFragment != null) transaction.hide(infoFragment);
+        if (settingsFragment != null) transaction.hide(settingsFragment);
     }
 }

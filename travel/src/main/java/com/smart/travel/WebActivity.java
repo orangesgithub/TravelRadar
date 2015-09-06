@@ -1,6 +1,7 @@
 package com.smart.travel;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,6 +25,9 @@ public class WebActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
     private ImageButton shareButton;
+    private ImageButton backButton;
+    private ImageButton forwardButton;
+    private ImageButton refreshButton;
 
     private static final String TAG = "RadarWebView";
 
@@ -49,14 +53,52 @@ public class WebActivity extends AppCompatActivity {
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+                backButton.setEnabled(webView.canGoBack());
+                forwardButton.setEnabled(webView.canGoForward());
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                backButton.setEnabled(webView.canGoBack());
+                forwardButton.setEnabled(webView.canGoForward());
+            }
+        });
         webView.setWebChromeClient(new CustomWebViewClient());
 
         webView.loadUrl(url);
 
+
+        shareButton = (ImageButton) findViewById(R.id.btn_url_share);
+        backButton = (ImageButton) findViewById(R.id.btn_url_back);
+        forwardButton = (ImageButton) findViewById(R.id.btn_url_forward);
+        refreshButton = (ImageButton) findViewById(R.id.btn_url_refresh);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.goBack();
+            }
+        });
+
+        forwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.goForward();
+            }
+        });
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.reload();
+            }
+        });
+
         UMSocialHelper.getInstance().setUp(this);
         UMSocialHelper.getInstance().setShareContent(title, content, url, new UMImage(this, image));
-        shareButton = (ImageButton) findViewById(R.id.btn_url_share);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +113,8 @@ public class WebActivity extends AppCompatActivity {
             progressBar.setProgress(newProgress);
             if (newProgress == 100) {
                 progressBar.setVisibility(View.GONE);
+            } else if (newProgress != 100 && progressBar.getVisibility() == View.GONE) {
+                progressBar.setVisibility(View.VISIBLE);
             }
             super.onProgressChanged(view, newProgress);
         }
@@ -81,6 +125,15 @@ public class WebActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_web, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

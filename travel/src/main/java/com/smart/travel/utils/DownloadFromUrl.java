@@ -49,7 +49,7 @@ public class DownloadFromUrl {
             inputStream.close();
         }
 
-        System.out.println("info:" + url + " download success");
+        System.out.println("tab_settings:" + url + " download success");
     }
 
 
@@ -69,8 +69,6 @@ public class DownloadFromUrl {
         if (inputStream != null) {
             inputStream.close();
         }
-
-        System.out.println("info:" + url + " download success");
 
         return getData;
     }
