@@ -44,10 +44,12 @@ public class UMSocialHelper {
         mController = UMServiceFactory.getUMSocialService("com.umeng.share");
         // add WX chart
         UMWXHandler wxHandler = new UMWXHandler(activity, WX_APP_ID, WX_APP_SECRET);
+        wxHandler.showCompressToast(false);
         wxHandler.addToSocialSDK();
         // add WX friends
         UMWXHandler wxCircleHandler = new UMWXHandler(activity, WX_APP_ID, WX_APP_SECRET);
         wxCircleHandler.setToCircle(true);
+        wxCircleHandler.showCompressToast(false);
         wxCircleHandler.addToSocialSDK();
         // add qq
         UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(activity, QQ_APP_ID, QQ_APP_SECRET);
