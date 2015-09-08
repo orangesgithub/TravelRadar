@@ -9,7 +9,7 @@ import java.util.List;
 public class SearchItem {
 
     private String classify;
-    private List<String> items;
+    private List<Item> items;
 
     public String getClassify() {
         return classify;
@@ -19,7 +19,7 @@ public class SearchItem {
         this.classify = classify;
     }
 
-    public List<String> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
@@ -27,12 +27,21 @@ public class SearchItem {
         this.items = items;
     }
 
-    public void addItem(String item) {
+    public void addItem(String strItem, String keyword) {
         if (items == null) {
             items = new ArrayList<>();
         }
 
+        Item item = new Item();
+        item.name = strItem;
+        item.keyword = keyword;
+
         items.add(item);
+    }
+
+    public static class Item {
+        public String name;
+        public String keyword;
     }
 
 }

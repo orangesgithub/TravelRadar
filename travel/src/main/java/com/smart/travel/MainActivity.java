@@ -112,20 +112,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         if (lastSelectionTab == RADAR_INDEX) {
+            radarButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_radar));
         } else if (lastSelectionTab == ADVICE_INDEX) {
+            adviceButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_advice));
         } else if (lastSelectionTab == SEARCH_INDEX) {
+            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_search));
         } else if (lastSelectionTab == SETTINGS_INDEX) {
+            settingsButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_settings));
         }
 
         if (index == RADAR_INDEX) {
             lastSelectionTab = RADAR_INDEX;
+            radarButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_radar_pressed));
         } else if (index == ADVICE_INDEX) {
             lastSelectionTab = ADVICE_INDEX;
-            Log.d(TAG, "advice index selected");
+            adviceButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_advice_pressed));
         } else if (index == SEARCH_INDEX) {
             lastSelectionTab = SEARCH_INDEX;
+            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_search_pressed));
         } else if (index == SETTINGS_INDEX) {
             lastSelectionTab = SETTINGS_INDEX;
+            settingsButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_settings_pressed));
         }
 
         hideFragments(transaction);

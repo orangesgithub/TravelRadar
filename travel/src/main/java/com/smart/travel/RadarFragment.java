@@ -77,7 +77,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 drawerLayout.closeDrawers();
                 Intent intent = new Intent(getActivity(), SearchResultActivity.class);
-                intent.putExtra("keyword", drawerListItems[position]);
+                intent.putExtra("title", drawerListItems[position]);
                 startActivity(intent);
             }
         });
@@ -183,7 +183,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         idSet.add(item.getId());
                     }
                     while (true) {
-                        List<RadarItem> items = TicketLoader.load(currPage++);
+                        List<RadarItem> items = TicketLoader.load(++currPage);
                         for (RadarItem item : items) {
                             if (!idSet.contains(item.getId())) {
                                 newItems.add(item);

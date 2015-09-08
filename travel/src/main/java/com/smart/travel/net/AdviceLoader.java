@@ -16,7 +16,7 @@ public class AdviceLoader {
 
     public static List<RadarItem> load(int page) throws Exception {
         HttpRequest request = new HttpRequest();
-        String jsonString = request.doGet("http://121.40.165.84/travel//Index/get_travel_v2?p=" + page + "&tab=type:" + URLEncoder.encode("锦囊", "utf-8"));
+        String jsonString = request.doGet("http://121.40.165.84/travel/Index/get_travel_v2?p=" + page + "&tab=type:" + URLEncoder.encode("锦囊", "utf-8"));
 
         List<RadarItem> listItems = new ArrayList<>();
 

@@ -20,9 +20,18 @@ public class SearchLoader {
 
     public static List<RadarItem> load(int page, String keyword) throws Exception {
         HttpRequest request = new HttpRequest();
-        String jsonString = request.doGet("http://121.40.165.84/travel//Index/get_travel_v2?p="
-                + page + "&tab=type:" + URLEncoder.encode("特价优惠", "utf-8")
-                + ";keyword:" + URLEncoder.encode(keyword, "utf-8"));
+        String jsonString = null;
+        if ("全部".equals(keyword)) {
+            jsonString = request.doGet("http://121.40.165.84/travel/Index/get_travel_v2?p="
+                    + page);
+            Log.d(TAG, "Search URL: http://121.40.165.84/travel/Index/get_travel_v2?p="
+                    + page);
+        } else {
+            jsonString = request.doGet("http://121.40.165.84/travel/Index/get_travel_v2?p="
+                    + page + "&tab=keyword:" + URLEncoder.encode(keyword, "utf-8"));
+            Log.d(TAG, "Search URL: http://121.40.165.84/travel/Index/get_travel_v2?p="
+                    + page + "&tab=keyword:" + keyword);
+        }
 
         List<RadarItem> listItems = new ArrayList<>();
 

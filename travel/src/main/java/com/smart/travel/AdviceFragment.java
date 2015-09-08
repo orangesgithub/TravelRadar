@@ -144,7 +144,7 @@ public class AdviceFragment extends Fragment {
                         idSet.add(item.getId());
                     }
                     while (true) {
-                        List<RadarItem> items = AdviceLoader.load(currPage++);
+                        List<RadarItem> items = AdviceLoader.load(++currPage);
                         for (RadarItem item : items) {
                             if (!idSet.contains(item.getId())) {
                                 newItems.add(item);

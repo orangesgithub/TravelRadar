@@ -7,7 +7,6 @@
         <item>京津冀</item>
         <item>华中</item>
         <item>西南</item>
-        <item>其他</item>
     </string-array>
 
     <string-array name="tab_items">

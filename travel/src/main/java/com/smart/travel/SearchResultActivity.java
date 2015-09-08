@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
-import com.smart.travel.net.AdviceLoader;
 import com.smart.travel.net.SearchLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -52,10 +51,30 @@ public class SearchResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
 
-        keyword = getIntent().getStringExtra("keyword");
+        String title = getIntent().getStringExtra("title");
+        if (getIntent().hasExtra("keyword")) {
+            keyword = getIntent().getStringExtra("keyword");
+        } else {
+            if ("全部".equals(title)) {
+                keyword = "全部";
+            } else if ("长三角".equals(title)) {
+                keyword = "华东|上海|杭州|南京|宁波|江浙";
+            } else if ("珠三角".equals(title)) {
+                keyword = "广州|深圳|香港|珠三角";
+            } else if ("京津冀".equals(title)) {
+                keyword = "北京|天津";
+            } else if ("华中".equals(title)) {
+                keyword = "武汉|长沙";
+            } else if ("西南".equals(title)) {
+                keyword = "成都|重庆|昆明|四川";
+            }
+        }
+
+
+        Log.d(TAG, "SearchResultActivity keyword: " + keyword);
 
         TextView textTitle = (TextView) findViewById(R.id.title_text);
-        textTitle.setText(keyword);
+        textTitle.setText(title);
 
         listViewAdapter = new AdviceListViewAdapter(this);
 
@@ -87,7 +106,6 @@ public class SearchResultActivity extends AppCompatActivity {
         });
 
         createFooterView();
-
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -143,7 +161,7 @@ public class SearchResultActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    listItems = SearchLoader.load(currPage++, keyword);
+                    listItems = SearchLoader.load(++currPage, keyword);
                     handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
@@ -173,7 +191,6 @@ public class SearchResultActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
     private void createFooterView() {
         footerViewLoading = new LinearLayout(this);
