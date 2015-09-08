@@ -115,7 +115,7 @@ public class SearchEditText extends EditText implements View.OnFocusChangeListen
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-// 清空edit内容
+        // 清空edit内容
         if (drawableDel != null && event.getAction() == MotionEvent.ACTION_UP) {
             eventX = (int) event.getRawX();
             eventY = (int) event.getRawY();
@@ -127,7 +127,7 @@ public class SearchEditText extends EditText implements View.OnFocusChangeListen
                 setText("");
             }
         }
-// 删除按钮被按下时改变图标样式
+        // 删除按钮被按下时改变图标样式
         if (drawableDel != null && event.getAction() == MotionEvent.ACTION_DOWN) {
             eventX = (int) event.getRawX();
             eventY = (int) event.getRawY();
@@ -144,7 +144,6 @@ public class SearchEditText extends EditText implements View.OnFocusChangeListen
         }
         return super.onTouchEvent(event);
     }
-
 
     @Override
     public void afterTextChanged(Editable arg0) {

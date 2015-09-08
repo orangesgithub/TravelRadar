@@ -2,7 +2,6 @@ package com.smart.travel;
 
 
 import android.app.FragmentTransaction;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RadarFragment radarFragment;
     private AdviceFragment adviceFragment;
     private SearchFragment searchFragment;
-    private InfoFragment settingsFragment;
+    private SettingsFragment settingsFragment;
 
     // click the following button, switch fragment
     private ImageButton radarButton;
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case SETTINGS_INDEX:
                 if (settingsFragment == null) {
-                    settingsFragment = new InfoFragment();
+                    settingsFragment = new SettingsFragment();
                     transaction.add(R.id.fragment_container, settingsFragment);
                 } else {
                     transaction.show(settingsFragment);

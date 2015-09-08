@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
@@ -14,15 +14,15 @@
         <ImageButton
             android:id="@+id/btn_url_back"
             style="?android:borderlessButtonStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:scaleType="centerInside"
-            android:src="@drawable/previous_100" />
+            android:src="@drawable/back_100_disabled" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
@@ -30,15 +30,15 @@
         <ImageButton
             android:id="@+id/btn_url_forward"
             style="?android:borderlessButtonStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:scaleType="centerInside"
-            android:src="@drawable/next_100" />
+            android:src="@drawable/forward_100_disabled" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
@@ -46,15 +46,15 @@
         <ImageButton
             android:id="@+id/btn_url_refresh"
             style="?android:borderlessButtonStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:scaleType="centerInside"
             android:src="@drawable/refresh_100" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
@@ -62,8 +62,8 @@
         <ImageButton
             android:id="@+id/btn_url_share"
             style="?android:borderlessButtonStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:scaleType="centerInside"
             android:src="@drawable/share_100" />
     </LinearLayout>

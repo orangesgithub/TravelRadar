@@ -3,12 +3,15 @@ package com.smart.travel;
 
 import android.app.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,7 +31,6 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         searchItems = new ArrayList<>();
 
@@ -104,7 +106,20 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.search_fragment, container, false);
 
+        final EditText searchText = (EditText) content.findViewById(R.id.search_text);
+
         LinearLayout linearLayout = (LinearLayout) content.findViewById(R.id.search_container);
+        LinearLayout parentLayout = (LinearLayout) linearLayout.getParent();
+        parentLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+                return false;
+            }
+        });
+
         linearLayout.setBackgroundColor(getActivity().getResources().getColor(R.color.color_white));
 
         for (int i = 0; i < searchItems.size(); i++) {
@@ -151,11 +166,21 @@ public class SearchFragment extends Fragment {
                 textView2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        textView2.setBackgroundResource(R.drawable.search_item_click);
                         Intent intent = new Intent(getActivity(), SearchResultActivity.class);
                         TextView tv = (TextView) v;
                         intent.putExtra("keyword", tv.getText());
                         startActivity(intent);
+                    }
+                });
+                textView2.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                textView2.setBackgroundResource(R.drawable.search_item_click);
+                                break;
+                        }
+                        return false;
                     }
                 });
 

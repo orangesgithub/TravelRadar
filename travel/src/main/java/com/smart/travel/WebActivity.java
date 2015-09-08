@@ -3,6 +3,7 @@ package com.smart.travel;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,8 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.smart.travel.utils.UMSocialHelper;
-import com.umeng.socialize.controller.UMServiceFactory;
-import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.media.UMImage;
 
 public class WebActivity extends AppCompatActivity {
@@ -56,14 +55,28 @@ public class WebActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
-                backButton.setEnabled(webView.canGoBack());
-                forwardButton.setEnabled(webView.canGoForward());
+                updateStatus();
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                updateStatus();
+            }
+
+            private void updateStatus() {
                 backButton.setEnabled(webView.canGoBack());
                 forwardButton.setEnabled(webView.canGoForward());
+                if (webView.canGoBack()) {
+                    backButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.back_100, null));
+                } else {
+                    backButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.back_100_disabled, null));
+                }
+
+                if (webView.canGoForward()) {
+                    forwardButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.forward_100, null));
+                } else {
+                    forwardButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.forward_100_disabled, null));
+                }
             }
         });
         webView.setWebChromeClient(new CustomWebViewClient());

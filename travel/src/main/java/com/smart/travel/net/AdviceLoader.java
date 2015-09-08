@@ -41,7 +41,7 @@ public class AdviceLoader {
             int showType = dataObject.getInt("show_type");
 
             RadarItem finderItem = new RadarItem();
-            finderItem.setId(i);
+            finderItem.setId(id);
             finderItem.setTitle(title);
             finderItem.setPubdate(pubdate);
             finderItem.setImage(image);

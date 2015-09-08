@@ -35,6 +35,10 @@ public class AdviceListViewAdapter extends BaseAdapter {
         this.listItems.addAll(items);
     }
 
+    public void addDataBegin(List<RadarItem> items) {
+        this.listItems.addAll(0, items);
+    }
+
     public List<RadarItem> getAllData() {
         return this.listItems;
     }

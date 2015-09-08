@@ -31,6 +31,10 @@ public class TravelListViewAdapter extends BaseAdapter {
         this.listContainer = LayoutInflater.from(context);
     }
 
+    public void addDataBegin(List<RadarItem> items) {
+        this.listItems.addAll(0, items);
+    }
+
     public void addData(List<RadarItem> items) {
         this.listItems.addAll(items);
     }

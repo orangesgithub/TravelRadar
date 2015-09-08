@@ -42,7 +42,7 @@
             android:textColor="@color/color_white"
             style="?android:attr/borderlessButtonStyle"
             android:text="@string/start_city"
-            android:paddingTop="3dp"
+            android:layout_marginTop="3dp"
             android:gravity="center|right" />
     </LinearLayout>
 </LinearLayout>

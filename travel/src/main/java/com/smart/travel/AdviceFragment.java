@@ -23,7 +23,10 @@ import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.AdviceLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AdviceFragment extends Fragment {
     private static final String TAG = "AdviceFragment";
@@ -31,12 +34,11 @@ public class AdviceFragment extends Fragment {
     private static final int MESSAGE_LOAD_MORE = 1;
     private static final int MESSAGE_REFRESH = 2;
 
+    private PullToRefreshView pullToRefreshView;
     private ListView adviceListView;
-    private AdviceListViewAdapter adviceListViewAdapter;
+    private AdviceListViewAdapter listViewAdapter;
 
     private int currPage = 0;
-
-    private List<RadarItem> adviceListItems;
 
     private LinearLayout footerViewLoading;
     private int lastItem;
@@ -45,34 +47,29 @@ public class AdviceFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        adviceListViewAdapter = new AdviceListViewAdapter(getActivity());
+        listViewAdapter = new AdviceListViewAdapter(getActivity());
         super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.advice_fragment, container, false);
-        final PullToRefreshView pullToRefreshView = (PullToRefreshView) content.findViewById(R.id.pull_to_refresh);
+        pullToRefreshView = (PullToRefreshView) content.findViewById(R.id.pull_to_refresh);
         pullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pullToRefreshView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullToRefreshView.setRefreshing(false);
-                    }
-                }, 1500);
+                doRefresh();
             }
         });
 
         adviceListView = (ListView) pullToRefreshView.findViewById(R.id.finder_list_view);
-        adviceListView.setAdapter(adviceListViewAdapter);
+        adviceListView.setAdapter(listViewAdapter);
 
         adviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                RadarItem radarItem = (RadarItem) adviceListViewAdapter.getItem(position);
+                RadarItem radarItem = (RadarItem) listViewAdapter.getItem(position);
                 intent.putExtra("url", radarItem.getUrl());
                 intent.putExtra("title", radarItem.getAuthor());
                 startActivity(intent);
@@ -102,11 +99,11 @@ public class AdviceFragment extends Fragment {
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastItem >= adviceListViewAdapter.getCount() && footerViewLoadingVisiable
+                if (lastItem >= listViewAdapter.getCount() && footerViewLoadingVisiable
                         && scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && !isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "start to pull new list");
-                    adviceListViewAdapter.notifyDataSetChanged();
+                    listViewAdapter.notifyDataSetChanged();
                     loadMore();
                 }
             }
@@ -119,15 +116,15 @@ public class AdviceFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_REFRESH:
+                    listViewAdapter.notifyDataSetChanged();
+                    pullToRefreshView.setRefreshing(false);
                     break;
                 case MESSAGE_LOAD_MORE:
                     adviceListView.removeFooterView(footerViewLoading);
                     adviceListView.setFooterDividersEnabled(true);
                     footerViewLoadingVisiable = false;
                     isLoadingData = false;
-                    adviceListViewAdapter.addData(adviceListItems);
-                    adviceListItems = null;
-                    adviceListViewAdapter.notifyDataSetChanged();
+                    listViewAdapter.notifyDataSetChanged();
                     break;
                 default:
                     break;
@@ -140,9 +137,64 @@ public class AdviceFragment extends Fragment {
         new Thread() {
             @Override
             public void run() {
+                List<RadarItem> newItems = new ArrayList<>(24);
+                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
-                    adviceListItems = AdviceLoader.load(currPage++);
+                    for (RadarItem item : listViewAdapter.getAllData()) {
+                        idSet.add(item.getId());
+                    }
+                    while (true) {
+                        List<RadarItem> items = AdviceLoader.load(currPage++);
+                        for (RadarItem item : items) {
+                            if (!idSet.contains(item.getId())) {
+                                newItems.add(item);
+                            }
+                        }
+                        // 如果服务器上没有数据，或者有当前列表里没有的新数据被Load进来，则停止
+                        if (items.size() == 0 || newItems.size() > 0) {
+                            break;
+                        }
+                    }
+
+                    listViewAdapter.addData(newItems);
                     handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
+                } catch (Exception e) {
+                    Log.e(TAG, "Radar Http Exception", e);
+                }
+            }
+        }.start();
+    }
+
+
+    private void doRefresh() {
+        Log.d(TAG, "doRefresh");
+        new Thread() {
+            @Override
+            public void run() {
+                int page = 0;
+                boolean loadFinished = false;
+                List<RadarItem> newItems = new ArrayList<>(16);
+                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
+                try {
+                    for (RadarItem item : listViewAdapter.getAllData()) {
+                        idSet.add(item.getId());
+                    }
+                    while (!loadFinished) {
+                        List<RadarItem> items = AdviceLoader.load(page++);
+                        for (RadarItem item : items) {
+                            if (!idSet.contains(item.getId())) {
+                                newItems.add(item);
+                            } else {
+                                loadFinished = true;
+                            }
+                        }
+                        Log.d(TAG, "loading page: " + page);
+                    }
+
+                    Log.d(TAG, "load finished");
+
+                    listViewAdapter.addDataBegin(newItems);
+                    handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                 }

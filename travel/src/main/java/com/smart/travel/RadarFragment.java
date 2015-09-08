@@ -24,7 +24,10 @@ import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.TicketLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static android.R.layout.simple_list_item_1;
 
@@ -39,13 +42,12 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "RadarFragment";
 
-    private TravelListViewAdapter ticketAdapter;
+    private TravelListViewAdapter listViewAdapter;
 
+    private PullToRefreshView pullToRefreshView;
     private ListView ticketListView;
 
-    private int ticketCurrPage = 0;
-
-    private List<RadarItem> ticketListItems;
+    private int currPage = 0;
 
     private LinearLayout footerViewLoading;
     private int lastItem;
@@ -56,7 +58,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ticketAdapter = new TravelListViewAdapter(getActivity());
+        listViewAdapter = new TravelListViewAdapter(getActivity());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,27 +82,22 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        final PullToRefreshView pullToRefreshView = (PullToRefreshView) content.findViewById(R.id.pull_to_refresh);
+        pullToRefreshView = (PullToRefreshView) content.findViewById(R.id.pull_to_refresh);
         pullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pullToRefreshView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullToRefreshView.setRefreshing(false);
-                    }
-                }, 1500);
+                doRefresh();
             }
         });
 
         ticketListView = (ListView) pullToRefreshView.findViewById(R.id.radar_list_view);
-        ticketListView.setAdapter(ticketAdapter);
+        ticketListView.setAdapter(listViewAdapter);
 
         ticketListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), WebActivity.class);
-                RadarItem radarItem = (RadarItem) ticketAdapter.getItem(position);
+                RadarItem radarItem = (RadarItem) listViewAdapter.getItem(position);
                 intent.putExtra("url", radarItem.getUrl());
                 intent.putExtra("title", radarItem.getAuthor());
                 intent.putExtra("content", radarItem.getTitle());
@@ -132,11 +129,11 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastItem >= ticketAdapter.getCount() && footerViewLoadingVisiable
+                if (lastItem >= listViewAdapter.getCount() && footerViewLoadingVisiable
                         && scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && !isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "start to pull new list");
-                    ticketAdapter.notifyDataSetChanged();
+                    listViewAdapter.notifyDataSetChanged();
                     loadMore();
                 }
             }
@@ -149,15 +146,15 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_REFRESH:
+                    listViewAdapter.notifyDataSetChanged();
+                    pullToRefreshView.setRefreshing(false);
                     break;
                 case MESSAGE_LOAD_MORE:
                     ticketListView.removeFooterView(footerViewLoading);
                     ticketListView.setFooterDividersEnabled(true);
                     footerViewLoadingVisiable = false;
                     isLoadingData = false;
-                    ticketAdapter.addData(ticketListItems);
-                    ticketListItems = null;
-                    ticketAdapter.notifyDataSetChanged();
+                    listViewAdapter.notifyDataSetChanged();
                     break;
                 default:
                     break;
@@ -179,8 +176,26 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         new Thread() {
             @Override
             public void run() {
+                List<RadarItem> newItems = new ArrayList<>(24);
+                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
-                    ticketListItems = TicketLoader.load(ticketCurrPage++);
+                    for (RadarItem item : listViewAdapter.getAllData()) {
+                        idSet.add(item.getId());
+                    }
+                    while (true) {
+                        List<RadarItem> items = TicketLoader.load(currPage++);
+                        for (RadarItem item : items) {
+                            if (!idSet.contains(item.getId())) {
+                                newItems.add(item);
+                            }
+                        }
+                        // 如果服务器上没有数据，或者有当前列表里没有的新数据被Load进来，则停止
+                        if (items.size() == 0 || newItems.size() > 0) {
+                            break;
+                        }
+                    }
+
+                    listViewAdapter.addData(newItems);
                     handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
@@ -190,11 +205,33 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     }
 
     private void doRefresh() {
+        Log.d(TAG, "doRefresh");
         new Thread() {
             @Override
             public void run() {
+                int page = 0;
+                boolean loadFinished = false;
+                List<RadarItem> newItems = new ArrayList<>(16);
+                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
-                    ticketListItems = TicketLoader.load(ticketCurrPage++);
+                    for (RadarItem item : listViewAdapter.getAllData()) {
+                        idSet.add(item.getId());
+                    }
+                    while (!loadFinished) {
+                        List<RadarItem> items = TicketLoader.load(page++);
+                        for (RadarItem item : items) {
+                            if (!idSet.contains(item.getId())) {
+                                newItems.add(item);
+                            } else {
+                                loadFinished = true;
+                            }
+                        }
+                        Log.d(TAG, "loading page: " + page);
+                    }
+
+                    Log.d(TAG, "load finished");
+
+                    listViewAdapter.addDataBegin(newItems);
                     handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);

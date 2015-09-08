@@ -47,7 +47,7 @@ public class SearchLoader {
             int showType = dataObject.getInt("show_type");
 
             RadarItem item = new RadarItem();
-            item.setId(i);
+            item.setId(id);
             item.setTitle(title);
             item.setPubdate(pubdate);
             item.setImage(image);

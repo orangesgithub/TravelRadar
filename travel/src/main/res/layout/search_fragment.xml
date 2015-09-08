@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.smart.travel.widget.ElasticScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_search">
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
-        <com.smart.travel.widget.SearchEditText
-            android:id="@+id/search_text"
-            style="@style/editTextStyle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
+            android:background="@color/color_search">
 
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            <com.smart.travel.widget.SearchEditText
+                android:id="@+id/search_text"
+                style="@style/editTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"></LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</com.smart.travel.widget.ElasticScrollView>

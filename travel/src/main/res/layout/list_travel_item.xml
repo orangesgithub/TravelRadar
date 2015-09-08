@@ -53,7 +53,7 @@
                 android:layout_below="@+id/from"
                 android:paddingTop="5dp"
                 android:text="旅游描述"
-                android:textColor="#222"
+                android:textColor="@color/color_text_dark"
                 android:textSize="14sp" />
 
         </RelativeLayout>

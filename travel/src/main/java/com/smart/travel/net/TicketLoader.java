@@ -41,7 +41,7 @@ public class TicketLoader {
             int showType = dataObject.getInt("show_type");
 
             RadarItem radarItem = new RadarItem();
-            radarItem.setId(i);
+            radarItem.setId(id);
             radarItem.setTitle(title);
             radarItem.setPubdate(pubdate);
             radarItem.setImage(image);

@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.smart.travel.widget.ElasticScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_setting_bg">
+    android:background="@color/color_setting_bg"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:layout_marginTop="20dp"
             android:background="@color/color_white">
 
             <ImageView
@@ -29,21 +27,42 @@
                 android:scaleType="fitXY" />
 
             <TextView
+                android:id="@+id/radar_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="26dp"
                 android:layout_toRightOf="@+id/radar_icon"
                 android:text="@string/app_name"
+                android:textColor="@color/color_text_dark"
                 android:textSize="18sp" />
 
-        </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/radar_brand"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="4dp"
+                android:layout_toRightOf="@+id/radar_icon"
+                android:text="@string/app_brief"
+                android:textSize="14sp" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            <ImageView
+                android:id="@+id/radar_qrcode"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="36dp"
+                android:background="@drawable/radar_qrcode_short"
+                android:scaleType="fitXY" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="45dp"
+            android:layout_marginTop="20dp"
             android:background="@color/color_white"></RelativeLayout>
 
         <LinearLayout
@@ -64,13 +83,10 @@
             android:layout_height="45dp"
             android:background="@color/color_white"></RelativeLayout>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="45dp"
+            android:layout_marginTop="20dp"
             android:background="@color/color_white"></RelativeLayout>
 
         <LinearLayout
@@ -91,4 +107,4 @@
             android:layout_height="45dp"
             android:background="@color/color_white"></RelativeLayout>
     </LinearLayout>
-</ScrollView>
+</com.smart.travel.widget.ElasticScrollView>
