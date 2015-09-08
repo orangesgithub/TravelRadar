@@ -2,8 +2,10 @@ package com.smart.travel;
 
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemor
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.umeng.analytics.MobclickAgent;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -89,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         titleRightButton.setOnClickListener(radarFragment);
 
         titleText = (TextView) findViewById(R.id.title_text);
+
+        MobclickAgent.updateOnlineConfig(this);
     }
 
     @Override
@@ -199,5 +204,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (adviceFragment != null) transaction.hide(adviceFragment);
         if (searchFragment != null) transaction.hide(searchFragment);
         if (settingsFragment != null) transaction.hide(settingsFragment);
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

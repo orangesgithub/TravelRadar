@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.smart.travel.utils.UMSocialHelper;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.media.UMImage;
 
 public class WebActivity extends AppCompatActivity {
@@ -165,5 +166,15 @@ public class WebActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         UMSocialHelper.getInstance().onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }
