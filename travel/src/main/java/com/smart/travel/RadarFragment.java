@@ -242,7 +242,6 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                     currPage++;
 
                     listViewAdapter.addData(newItems);
-                    handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                     handler.post(new Runnable() {
@@ -252,6 +251,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         }
                     });
                 } finally {
+                    handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
                     if (dialog != null) {
                         handler.post(new Runnable() {
                             @Override
@@ -299,7 +299,6 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                     Log.d(TAG, "load finished");
 
                     listViewAdapter.addDataBegin(newItems);
-                    handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                     handler.post(new Runnable() {
