@@ -23,8 +23,11 @@ public class TravelListViewAdapter extends BaseAdapter {
     private List<RadarItem> listItems = new ArrayList<>();
     private LayoutInflater listContainer;
 
-    private DisplayImageOptions options = new DisplayImageOptions.Builder().
-            showImageOnLoading(R.drawable.loading).showImageOnFail(R.drawable.loading).cacheInMemory(true).build();
+    private DisplayImageOptions options = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.loading)
+            .showImageOnFail(R.drawable.loading)
+            .cacheInMemory(true)
+            .cacheOnDisk(true).build();
 
     public TravelListViewAdapter(Context context) {
         this.context = context;

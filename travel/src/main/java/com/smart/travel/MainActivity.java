@@ -9,17 +9,20 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.umeng.analytics.MobclickAgent;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
                 .threadPoolSize(3).threadPriority(Thread.NORM_PRIORITY - 2)
                 .memoryCache(new UsingFreqLimitedMemoryCache(20 * 1024 * 1024))
+                .diskCacheFileCount(50)
                 .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000)).build();
         ImageLoader.getInstance().init(configuration);
 
@@ -96,6 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         titleText = (TextView) findViewById(R.id.title_text);
 
         MobclickAgent.updateOnlineConfig(this);
+
+        File cache = ImageLoader.getInstance().getDiskCache().getDirectory();
+        // ImageLoader.getInstance().clearDiskCache();
+        Log.e(TAG, "==== cache dir:" + cache);
+        Log.e(TAG, "==== file size:" + getFileSize(cache));
     }
 
     @Override
@@ -230,4 +239,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    public long getFileSize(File f) {
+        long size = 0;
+        File flist[] = f.listFiles();
+        for (int i = 0; i < flist.length; i++) {
+            if (flist[i].isDirectory()) {
+                size = size + getFileSize(flist[i]);
+            } else {
+                size = size + flist[i].length();
+            }
+        }
+        return size;
+    }
 }
