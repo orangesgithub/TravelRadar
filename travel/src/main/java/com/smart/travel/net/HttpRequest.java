@@ -23,6 +23,8 @@ public class HttpRequest {
         httpURLConnection.setRequestProperty("Accept-Charset", "utf-8");
         httpURLConnection.setRequestProperty("Content-Type",
                 "application/x-www-form-urlencoded");
+        httpURLConnection.setConnectTimeout(10 * 1000);
+        httpURLConnection.setReadTimeout(10 * 1000);
 
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
@@ -48,14 +50,6 @@ public class HttpRequest {
         } finally {
             if (reader != null) {
                 reader.close();
-            }
-
-            if (inputStreamReader != null) {
-                inputStreamReader.close();
-            }
-
-            if (inputStream != null) {
-                inputStream.close();
             }
         }
 

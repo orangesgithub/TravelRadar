@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -18,6 +19,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -176,6 +179,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         transaction.commit();
+
+//        RelativeLayout networkErrBar = (RelativeLayout) findViewById(R.id.network_err_bar);
+//        if (index == SEARCH_INDEX || index == SETTINGS_INDEX) {
+//            networkErrBar.setVisibility(View.GONE);
+//        } else if (index == RADAR_INDEX || index == ADVICE_INDEX) {
+//
+//        }
     }
 
     private void changeTitle(int index) {

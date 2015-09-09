@@ -2,6 +2,7 @@ package com.smart.travel;
 
 import android.app.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +14,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smart.travel.model.SearchItem;
 import com.smart.travel.net.SearchListLoader;
@@ -34,6 +37,8 @@ public class SearchFragment extends Fragment {
     private List<SearchItem> searchItems;
 
     private Map<TextView, SearchItem.Item> tvItemMap = new HashMap<>(64);
+
+    private ProgressDialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,16 @@ public class SearchFragment extends Fragment {
 
         keywordLayout.setBackgroundColor(getActivity().getResources().getColor(R.color.color_white));
 
+        return content;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        dialog = ProgressDialog.show(getActivity(), "",
+                "加载数据...", true);
+        dialog.show();
+
         new Thread() {
             @Override
             public void run() {
@@ -73,6 +88,14 @@ public class SearchFragment extends Fragment {
                     searchItems.add(0, item);
                 } catch (Exception e) {
                     Log.e(TAG, "Load search list failed.", e);
+                    keywordLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "加载数据失败", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } finally {
+                    dialog.dismiss();
                 }
 
                 if (searchItems != null) {
@@ -85,8 +108,6 @@ public class SearchFragment extends Fragment {
                 }
             }
         }.start();
-
-        return content;
     }
 
     private void fillSearchKeywords() {
@@ -96,15 +117,15 @@ public class SearchFragment extends Fragment {
             FlowLayout.LayoutParams layoutParamsTitle = new FlowLayout.LayoutParams(FlowLayout.LayoutParams.MATCH_PARENT, FlowLayout.LayoutParams.WRAP_CONTENT);
             flowLayoutTitle.setBackgroundColor(getActivity().getResources().getColor(R.color.color_search_classify));
 
-            TextView textView = new TextView(getActivity());
-            textView.setText(item.getClassify());
-            textView.setTextColor(getResources().getColor(R.color.color_text_search_title));
+            TextView textViewClassify = new TextView(getActivity());
+            textViewClassify.setText(item.getClassify());
+            textViewClassify.setTextColor(getResources().getColor(R.color.color_text_search_title));
 
             int paddingLR = DensityUtil.dip2px(getActivity(), 8);
             int paddingTB = DensityUtil.dip2px(getActivity(), 5);
 
-            textView.setPadding(paddingLR, paddingTB, paddingLR, paddingTB);
-            flowLayoutTitle.addView(textView);
+            textViewClassify.setPadding(paddingLR, paddingTB, paddingLR, paddingTB);
+            flowLayoutTitle.addView(textViewClassify);
 
             keywordLayout.addView(flowLayoutTitle, layoutParamsTitle);
 
@@ -127,12 +148,12 @@ public class SearchFragment extends Fragment {
             paddingTB = DensityUtil.dip2px(getActivity(), 4);
 
             for (int j = 0; j < item.getItems().size(); j++) {
-                final TextView textView2 = new TextView(getActivity());
-                textView2.setText(item.getItems().get(j).name);
-                textView2.setPadding(paddingLeft, paddingTB, paddingRight, paddingTB);
-                tvItemMap.put(textView2, item.getItems().get(j));
+                final TextView textViewSearch = new TextView(getActivity());
+                textViewSearch.setText(item.getItems().get(j).name);
+                textViewSearch.setPadding(paddingLeft, paddingTB, paddingRight, paddingTB);
+                tvItemMap.put(textViewSearch, item.getItems().get(j));
 
-                textView2.setOnClickListener(new View.OnClickListener() {
+                textViewSearch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), SearchResultActivity.class);
@@ -142,19 +163,19 @@ public class SearchFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
-                textView2.setOnTouchListener(new View.OnTouchListener() {
+                textViewSearch.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
-                                textView2.setBackgroundResource(R.drawable.search_item_click);
+                                textViewSearch.setBackgroundResource(R.drawable.search_item_click);
                                 break;
                         }
                         return false;
                     }
                 });
 
-                flowLayoutItems.addView(textView2);
+                flowLayoutItems.addView(textViewSearch);
             }
 
             keywordLayout.addView(flowLayoutItems, layoutParamsItems);

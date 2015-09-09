@@ -6,6 +6,8 @@
     <string name="app_version_full">版本号：V1.0.0</string>
     <string name="app_brief">您身边的旅行资讯专家</string>
 
+    <string name="network_error">网络连接不可用</string>
+
     <string name="first_page">首页</string>
     <string name="second_page">锦囊</string>
     <string name="second_title">旅行锦囊</string>

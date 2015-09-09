@@ -1,11 +1,15 @@
 package com.smart.travel.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ScrollView;
 
 public class CustomerScrollView extends ScrollView {
@@ -112,7 +116,7 @@ public class CustomerScrollView extends ScrollView {
 
     private void animation() {
         scrollY = mView.getScrollY();
-        eachStep = scrollY / 10;
+        eachStep = scrollY / 30;
         resetPositionHandler.sendEmptyMessage(0);
     }
 
@@ -127,8 +131,6 @@ public class CustomerScrollView extends ScrollView {
                 this.sendEmptyMessageDelayed(0, 5);
             }
         }
-
-        ;
     };
 
 }

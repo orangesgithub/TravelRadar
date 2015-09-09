@@ -1,6 +1,7 @@
 package com.smart.travel;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smart.travel.adapter.TravelListViewAdapter;
 import com.smart.travel.model.RadarItem;
@@ -53,6 +55,8 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     private int lastItem;
     private boolean isLoadingData = false;
     private boolean footerViewLoadingVisiable = false;
+
+    private ProgressDialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,6 +142,9 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+        dialog = ProgressDialog.show(getActivity(), "",
+                "加载数据...", true);
+        dialog.show();
         loadMore();
     }
 
@@ -183,7 +190,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         idSet.add(item.getId());
                     }
                     while (true) {
-                        List<RadarItem> items = TicketLoader.load(++currPage);
+                        List<RadarItem> items = TicketLoader.load(currPage + 1);
                         for (RadarItem item : items) {
                             if (!idSet.contains(item.getId())) {
                                 newItems.add(item);
@@ -195,10 +202,28 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         }
                     }
 
+                    currPage++;
+
                     listViewAdapter.addData(newItems);
                     handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "加载数据失败", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } finally {
+                    if (dialog != null) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                                dialog = null;
+                            }
+                        });
+                    }
                 }
             }
         }.start();
@@ -218,7 +243,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         idSet.add(item.getId());
                     }
                     while (!loadFinished) {
-                        List<RadarItem> items = TicketLoader.load(page++);
+                        List<RadarItem> items = TicketLoader.load(page + 1);
                         for (RadarItem item : items) {
                             if (!idSet.contains(item.getId())) {
                                 newItems.add(item);
@@ -226,7 +251,12 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                                 loadFinished = true;
                             }
                         }
+                        page++;
                         Log.d(TAG, "loading page: " + page);
+
+                        if (currPage == 0) {
+                            loadFinished = true;
+                        }
                     }
 
                     Log.d(TAG, "load finished");
@@ -235,6 +265,14 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                     handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "加载数据失败", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } finally {
+                    handler.sendEmptyMessage(MESSAGE_REFRESH);
                 }
             }
         }.start();

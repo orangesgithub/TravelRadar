@@ -102,7 +102,6 @@ public class ElasticScrollView extends ScrollView {
 
     public void myTouchEvent(MotionEvent ev) {
         if (animationFinish) {
-
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     startY = ev.getY();

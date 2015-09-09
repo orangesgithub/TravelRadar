@@ -1,5 +1,6 @@
 package com.smart.travel;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,9 +22,13 @@ import android.widget.TextView;
 import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.SearchLoader;
+import com.smart.travel.net.TicketLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SearchResultActivity extends AppCompatActivity {
 
@@ -32,6 +37,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private static final int MESSAGE_LOAD_MORE = 1;
     private static final int MESSAGE_REFRESH = 2;
 
+    private PullToRefreshView pullToRefreshView;
     private ListView listView;
     private AdviceListViewAdapter listViewAdapter;
 
@@ -39,12 +45,12 @@ public class SearchResultActivity extends AppCompatActivity {
 
     private int currPage = 0;
 
-    private List<RadarItem> listItems;
-
     private LinearLayout footerViewLoading;
     private int lastItem;
     private boolean isLoadingData = false;
     private boolean footerViewLoadingVisiable = false;
+
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,16 +84,11 @@ public class SearchResultActivity extends AppCompatActivity {
 
         listViewAdapter = new AdviceListViewAdapter(this);
 
-        final PullToRefreshView pullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
+        pullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
         pullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pullToRefreshView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullToRefreshView.setRefreshing(false);
-                    }
-                }, 1500);
+                doRefresh();
             }
         });
 
@@ -131,6 +132,10 @@ public class SearchResultActivity extends AppCompatActivity {
                 }
             }
         });
+
+        dialog = ProgressDialog.show(this, "",
+                "加载数据...", true);
+        dialog.show();
         loadMore();
     }
 
@@ -139,14 +144,14 @@ public class SearchResultActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_REFRESH:
+                    listViewAdapter.notifyDataSetChanged();
+                    pullToRefreshView.setRefreshing(false);
                     break;
                 case MESSAGE_LOAD_MORE:
                     listView.removeFooterView(footerViewLoading);
                     listView.setFooterDividersEnabled(true);
                     footerViewLoadingVisiable = false;
                     isLoadingData = false;
-                    listViewAdapter.addData(listItems);
-                    listItems = null;
                     listViewAdapter.notifyDataSetChanged();
                     break;
                 default:
@@ -161,14 +166,68 @@ public class SearchResultActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    listItems = SearchLoader.load(++currPage, keyword);
+                    List<RadarItem> listItems = SearchLoader.load(currPage + 1, keyword);
+                    listViewAdapter.addData(listItems);
                     handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
+                    currPage++;
+                } catch (Exception e) {
+                    Log.e(TAG, "Radar Http Exception", e);
+                } finally {
+                    if (dialog != null) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                                dialog = null;
+                            }
+                        });
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private void doRefresh() {
+        Log.d(TAG, "doRefresh");
+        new Thread() {
+            @Override
+            public void run() {
+                int page = 0;
+                boolean loadFinished = false;
+                List<RadarItem> newItems = new ArrayList<>(16);
+                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
+                try {
+                    for (RadarItem item : listViewAdapter.getAllData()) {
+                        idSet.add(item.getId());
+                    }
+                    while (!loadFinished) {
+                        List<RadarItem> items = SearchLoader.load(page + 1, keyword);
+                        for (RadarItem item : items) {
+                            if (!idSet.contains(item.getId())) {
+                                newItems.add(item);
+                            } else {
+                                loadFinished = true;
+                            }
+                        }
+                        page++;
+                        Log.d(TAG, "loading page: " + page);
+
+                        if (currPage == 0) {
+                            loadFinished = true;
+                        }
+                    }
+
+                    Log.d(TAG, "load finished");
+
+                    listViewAdapter.addDataBegin(newItems);
+                    handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                 }
             }
         }.start();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
