@@ -227,6 +227,7 @@ public class AdviceFragment extends Fragment {
                     handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
+                    handler.sendEmptyMessage(MESSAGE_REFRESH);
                 }
             }
         }.start();

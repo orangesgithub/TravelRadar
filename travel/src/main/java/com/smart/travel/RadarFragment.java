@@ -2,7 +2,11 @@ package com.smart.travel;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,12 +22,14 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smart.travel.adapter.TravelListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.TicketLoader;
+import com.smart.travel.utils.NetworkUtils;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -35,14 +41,14 @@ import static android.R.layout.simple_list_item_1;
 
 
 public class RadarFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "RadarFragment";
+
     private static final int MESSAGE_LOAD_MORE = 1;
     private static final int MESSAGE_REFRESH = 2;
 
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private String[] drawerListItems;
-
-    private static final String TAG = "RadarFragment";
 
     private TravelListViewAdapter listViewAdapter;
 
@@ -58,6 +64,8 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     private ProgressDialog dialog;
 
+    private RelativeLayout networkErrBar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +79,9 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
         // Inflate the layout for this fragment
         View content = inflater.inflate(R.layout.radar_fragment, container, false);
+
+        networkErrBar = (RelativeLayout) content.findViewById(R.id.network_err_bar);
+
         drawerLayout = (DrawerLayout) content.findViewById(R.id.drawer_layout);
         drawerList = (ListView) content.findViewById(R.id.right_drawer);
         drawerList.setAdapter(new ArrayAdapter<>(getActivity(), simple_list_item_1, drawerListItems));
@@ -147,6 +158,32 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         dialog.show();
         loadMore();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        getActivity().registerReceiver(networkStateReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(networkStateReceiver);
+    }
+
+    private BroadcastReceiver networkStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (NetworkUtils.isNetworkConnected(getActivity())) {
+                Log.d(TAG, "Network available");
+                networkErrBar.setVisibility(View.GONE);
+            } else {
+                Log.d(TAG, "Network unavailable");
+                networkErrBar.setVisibility(View.VISIBLE);
+            }
+        }
+    };
 
     private Handler handler = new Handler() {
         @Override

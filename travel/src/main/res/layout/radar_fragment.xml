@@ -7,7 +7,8 @@
         android:id="@+id/network_err_bar"
         android:layout_width="match_parent"
         android:layout_height="42dp"
-        android:background="@drawable/network_err_bg">
+        android:background="@drawable/network_err_bg"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/network_err_img"

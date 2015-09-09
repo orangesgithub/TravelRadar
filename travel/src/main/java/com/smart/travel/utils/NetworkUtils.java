@@ -10,7 +10,9 @@ import android.util.Log;
 /**
  * Created by yfan10x on 2015/9/9.
  */
-public class NetworkChecker {
+public class NetworkUtils {
+
+    private static final String TAG = "NetworkUtils";
 
     /**
      * 判断移动网络是否开启
@@ -23,11 +25,11 @@ public class NetworkChecker {
                 .getSystemService(Context.TELEPHONY_SERVICE);
         if (tm != null) {
             if (tm.getNetworkType() != TelephonyManager.NETWORK_TYPE_UNKNOWN) {
-                Log.i("sjf", "移动网络已经开启");
+                Log.i(TAG, "移动网络已经开启");
                 return true;
             }
         }
-        Log.i("sjf", "移动网络还未开启");
+        Log.i(TAG, "移动网络还未开启");
         return false;
     }
 
@@ -41,10 +43,10 @@ public class NetworkChecker {
         WifiManager wm = (WifiManager) context
                 .getSystemService(Context.WIFI_SERVICE);
         if (wm != null && wm.isWifiEnabled()) {
-            Log.i("sjf", "Wifi网络已经开启");
+            Log.i(TAG, "Wifi网络已经开启");
             return true;
         }
-        Log.i("sjf", "Wifi网络还未开启");
+        Log.i(TAG, "Wifi网络还未开启");
         return false;
     }
 
@@ -59,10 +61,10 @@ public class NetworkChecker {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         if (cm != null && info != null && info.isConnected()) {
-            Log.i("sjf", "移动网络连接成功");
+            Log.i(TAG, "移动网络连接成功");
             return true;
         }
-        Log.i("sjf", "移动网络连接失败");
+        Log.i(TAG, "移动网络连接失败");
         return false;
     }
 
@@ -77,10 +79,10 @@ public class NetworkChecker {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (info != null && info.isConnected()) {
-            Log.i("sjf", "Wifi网络连接成功");
+            Log.i(TAG, "Wifi网络连接成功");
             return true;
         }
-        Log.i("sjf", "Wifi网络连接失败");
+        Log.i(TAG, "Wifi网络连接失败");
         return false;
     }
 

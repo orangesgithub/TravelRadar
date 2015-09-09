@@ -223,6 +223,7 @@ public class SearchResultActivity extends AppCompatActivity {
                     handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
+                    handler.sendEmptyMessage(MESSAGE_REFRESH);
                 }
             }
         }.start();
