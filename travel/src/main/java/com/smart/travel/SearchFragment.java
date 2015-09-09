@@ -7,13 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,12 +37,13 @@ public class SearchFragment extends Fragment {
 
     private static final String TAG = "SearchFragment";
 
+
+    private FrameLayout searchFrame;
+    private LinearLayout searchInner;
     private LinearLayout keywordLayout;
     private List<SearchItem> searchItems;
 
     private Map<TextView, SearchItem.Item> tvItemMap = new HashMap<>(64);
-
-    private ProgressDialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,10 +54,12 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.search_fragment, container, false);
+        searchFrame = (FrameLayout) content.findViewById(R.id.search_frame);
 
-        final EditText searchText = (EditText) content.findViewById(R.id.search_text);
+        searchInner = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.search_fragment_inner, searchFrame, false);
+        final EditText searchText = (EditText) searchInner.findViewById(R.id.search_text);
 
-        keywordLayout = (LinearLayout) content.findViewById(R.id.search_container);
+        keywordLayout = (LinearLayout) searchInner.findViewById(R.id.search_container);
         LinearLayout parentLayout = (LinearLayout) keywordLayout.getParent();
         parentLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -72,15 +79,15 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dialog = ProgressDialog.show(getActivity(), "",
-                "加载数据...", true);
-        dialog.show();
+        loadSearchKeywords();
+    }
 
+    private void loadSearchKeywords() {
         new Thread() {
             @Override
             public void run() {
                 try {
-                    searchItems = SearchListLoader.load();
+                    searchItems = SearchListLoader.load(getActivity());
 
                     SearchItem item = new SearchItem();
                     item.setClassify("最近检索");
@@ -88,20 +95,20 @@ public class SearchFragment extends Fragment {
                     searchItems.add(0, item);
                 } catch (Exception e) {
                     Log.e(TAG, "Load search list failed.", e);
-                    keywordLayout.post(new Runnable() {
+                    searchFrame.post(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getActivity(), "加载数据失败", Toast.LENGTH_LONG).show();
                         }
                     });
-                } finally {
-                    dialog.dismiss();
                 }
 
                 if (searchItems != null) {
-                    keywordLayout.post(new Runnable() {
+                    searchFrame.post(new Runnable() {
                         @Override
                         public void run() {
+                            searchFrame.removeAllViews();
+                            searchFrame.addView(searchInner);
                             fillSearchKeywords();
                         }
                     });

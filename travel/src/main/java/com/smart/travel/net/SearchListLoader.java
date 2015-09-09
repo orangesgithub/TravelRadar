@@ -1,11 +1,18 @@
 package com.smart.travel.net;
 
+import android.content.Context;
+
 import com.smart.travel.helper.DocHelper;
 import com.smart.travel.model.SearchItem;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +21,33 @@ import java.util.List;
  */
 public class SearchListLoader {
 
-    public static List<SearchItem> load() throws Exception {
+    private static final String SEARCH_LIST_CACHE_FILE = "radar_search_list.xml";
+
+    public static List<SearchItem> load(Context context) throws Exception {
         HttpRequest request = new HttpRequest();
-        String text = text = request.doGet("http://121.40.165.84/travel/NodesList.plist");
-        return parse(text);
+        try {
+            String text = request.doGet("http://121.40.165.84/travel/NodesList.plist");
+            FileOutputStream outputStream = context.openFileOutput(SEARCH_LIST_CACHE_FILE, Context.MODE_PRIVATE);
+            outputStream.write(text.getBytes("UTF-8"));
+            outputStream.close();
+
+            return parse(text);
+        } catch (Exception e) {
+            try {
+                StringBuffer stringBuffer = new StringBuffer(1024 * 8);
+                FileInputStream in = context.openFileInput(SEARCH_LIST_CACHE_FILE);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    stringBuffer.append(line);
+                }
+                br.close();
+
+                return parse(stringBuffer.toString());
+            } catch (FileNotFoundException e2) {
+                throw e;
+            }
+        }
     }
 
     private static List<SearchItem> parse(String text) throws Exception {
