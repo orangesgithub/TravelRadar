@@ -4,11 +4,13 @@ import android.content.Context;
 
 import com.smart.travel.helper.DocHelper;
 import com.smart.travel.model.SearchItem;
+import com.smart.travel.utils.FileUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,26 +29,15 @@ public class SearchListLoader {
         HttpRequest request = new HttpRequest();
         try {
             String text = request.doGet("http://121.40.165.84/travel/NodesList.plist");
-            FileOutputStream outputStream = context.openFileOutput(SEARCH_LIST_CACHE_FILE, Context.MODE_PRIVATE);
-            outputStream.write(text.getBytes("UTF-8"));
-            outputStream.close();
+            FileUtils.writeFile(context, SEARCH_LIST_CACHE_FILE, text.getBytes("utf-8"));
 
             return parse(text);
         } catch (Exception e) {
-            try {
-                StringBuffer stringBuffer = new StringBuffer(1024 * 8);
-                FileInputStream in = context.openFileInput(SEARCH_LIST_CACHE_FILE);
-                BufferedReader br = new BufferedReader(new InputStreamReader(in));
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    stringBuffer.append(line);
-                }
-                br.close();
-
-                return parse(stringBuffer.toString());
-            } catch (FileNotFoundException e2) {
+            if (!FileUtils.fileExists(context, SEARCH_LIST_CACHE_FILE)) {
                 throw e;
             }
+            String text = FileUtils.readFile(context, SEARCH_LIST_CACHE_FILE);
+            return parse(text);
         }
     }
 

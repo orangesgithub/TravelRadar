@@ -86,7 +86,7 @@ public class SettingsFragment extends Fragment {
     }
 
     public String formatCacheResult(long size) {
-        Log.e(TAG, "size:" + size);
+        Log.d(TAG, "size:" + size);
         double sizeM = size / (1024 * 1024 * 1.0);
         // Keep 2 decimal
         double result = (double)Math.round(sizeM*100)/100;

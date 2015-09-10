@@ -1,6 +1,10 @@
 package com.smart.travel.net;
 
+import android.content.Context;
+
+import com.smart.travel.RadarFragment;
 import com.smart.travel.model.RadarItem;
+import com.smart.travel.utils.FileUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,10 +18,19 @@ import java.util.List;
  */
 public class TicketLoader {
 
-    public static List<RadarItem> load(int page) throws Exception {
+    public static List<RadarItem> load(Context context, int page) throws Exception {
         HttpRequest request = new HttpRequest();
         String jsonString = request.doGet("http://121.40.165.84/travel/Index/get_travel_v2?p=" + page + "&tab=type:" + URLEncoder.encode("特价优惠", "utf-8"));
 
+        if (page == 1) {
+            FileUtils.writeFile(context, RadarFragment.RADAR_LISTVIEW_HISTORY_FILE, jsonString.getBytes("utf-8"));
+        }
+
+
+        return parse(jsonString);
+    }
+
+    public static List<RadarItem> parse(String jsonString) throws Exception {
         List<RadarItem> listItems = new ArrayList<>();
 
         JSONObject parentObj = new JSONObject(jsonString);

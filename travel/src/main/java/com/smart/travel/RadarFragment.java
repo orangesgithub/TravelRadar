@@ -1,7 +1,6 @@
 package com.smart.travel;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +28,7 @@ import android.widget.Toast;
 import com.smart.travel.adapter.TravelListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.TicketLoader;
+import com.smart.travel.utils.FileUtils;
 import com.smart.travel.utils.NetworkUtils;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -43,8 +43,12 @@ import static android.R.layout.simple_list_item_1;
 public class RadarFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "RadarFragment";
 
+    public static final String RADAR_LISTVIEW_HISTORY_FILE = "radar_listview_history.dat";
+
     private static final int MESSAGE_LOAD_MORE = 1;
     private static final int MESSAGE_REFRESH = 2;
+    private static final int MESSAGE_CLEAR_AND_REFRESH = 3;
+
 
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -58,13 +62,15 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     private int currPage = 0;
 
     private LinearLayout footerViewLoading;
+    private List<RadarItem> updateItems;
     private int lastItem;
     private boolean isLoadingData = false;
     private boolean footerViewLoadingVisiable = false;
 
-    private ProgressDialog dialog;
-
     private RelativeLayout networkErrBar;
+
+    // 第一次进入页面的时候，会首先显示本地数据，当网络数据下载完毕的时候，会删除ListView中的本地数据并显示最新的数据
+    private boolean firstDoRefresh = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -153,10 +159,18 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
-        dialog = ProgressDialog.show(getActivity(), "",
-                "加载数据...", true);
-        dialog.show();
-        loadMore();
+
+        try {
+            if (FileUtils.fileExists(getActivity(), RADAR_LISTVIEW_HISTORY_FILE)) {
+                updateItems = TicketLoader.parse(FileUtils.readFile(getActivity(), RADAR_LISTVIEW_HISTORY_FILE));
+                handler.sendEmptyMessage(MESSAGE_REFRESH);
+            } else {
+                updateItems = new ArrayList<>();
+            }
+            handler.sendEmptyMessage(MESSAGE_REFRESH);
+        } catch (Exception e) {
+            Log.e(TAG, "Radar fragment load local json file failed.", e);
+        }
     }
 
     @Override
@@ -190,14 +204,34 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_REFRESH:
+                    Log.d(TAG, "message do refresh, updateItems size: " + updateItems.size());
+                    listViewAdapter.addData(updateItems);
                     listViewAdapter.notifyDataSetChanged();
                     pullToRefreshView.setRefreshing(false);
+
+                    if (firstDoRefresh) {
+                        pullToRefreshView.setRefreshing(true);
+                        doRefresh();
+                    }
+                    break;
+                case MESSAGE_CLEAR_AND_REFRESH:
+                    Log.d(TAG, "message do refresh, updateItems size: " + updateItems.size());
+                    if (updateItems.size() > 0) {
+                        listViewAdapter.getAllData().clear();
+                    }
+                    listViewAdapter.addData(updateItems);
+                    listViewAdapter.notifyDataSetChanged();
+                    pullToRefreshView.setRefreshing(false);
+                    firstDoRefresh = false;
+                    currPage = 1;
                     break;
                 case MESSAGE_LOAD_MORE:
+                    Log.d(TAG, "message load more, updateItems size: " + updateItems.size());
                     ticketListView.removeFooterView(footerViewLoading);
                     ticketListView.setFooterDividersEnabled(true);
                     footerViewLoadingVisiable = false;
                     isLoadingData = false;
+                    listViewAdapter.addData(updateItems);
                     listViewAdapter.notifyDataSetChanged();
                     break;
                 default:
@@ -217,31 +251,30 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadMore() {
+        Log.d(TAG, "doRefresh");
         new Thread() {
             @Override
             public void run() {
-                List<RadarItem> newItems = new ArrayList<>(24);
+                updateItems = new ArrayList<>(24);
                 Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
                     for (RadarItem item : listViewAdapter.getAllData()) {
                         idSet.add(item.getId());
                     }
                     while (true) {
-                        List<RadarItem> items = TicketLoader.load(currPage + 1);
+                        List<RadarItem> items = TicketLoader.load(getActivity(), currPage + 1);
                         for (RadarItem item : items) {
                             if (!idSet.contains(item.getId())) {
-                                newItems.add(item);
+                                updateItems.add(item);
                             }
                         }
                         // 如果服务器上没有数据，或者有当前列表里没有的新数据被Load进来，则停止
-                        if (items.size() == 0 || newItems.size() > 0) {
+                        if (items.size() == 0 || updateItems.size() > 0) {
                             break;
                         }
                     }
 
                     currPage++;
-
-                    listViewAdapter.addData(newItems);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                     handler.post(new Runnable() {
@@ -252,15 +285,6 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                     });
                 } finally {
                     handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
-                    if (dialog != null) {
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                                dialog = null;
-                            }
-                        });
-                    }
                 }
             }
         }.start();
@@ -271,19 +295,21 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         new Thread() {
             @Override
             public void run() {
+                long tStart = System.currentTimeMillis();
+
                 int page = 0;
                 boolean loadFinished = false;
-                List<RadarItem> newItems = new ArrayList<>(16);
+                updateItems = new ArrayList<>(16);
                 Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
                     for (RadarItem item : listViewAdapter.getAllData()) {
                         idSet.add(item.getId());
                     }
                     while (!loadFinished) {
-                        List<RadarItem> items = TicketLoader.load(page + 1);
+                        List<RadarItem> items = TicketLoader.load(getActivity(), page + 1);
                         for (RadarItem item : items) {
-                            if (!idSet.contains(item.getId())) {
-                                newItems.add(item);
+                            if (!idSet.contains(item.getId()) || firstDoRefresh) {
+                                updateItems.add(item);
                             } else {
                                 loadFinished = true;
                             }
@@ -297,8 +323,6 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                     }
 
                     Log.d(TAG, "load finished");
-
-                    listViewAdapter.addDataBegin(newItems);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                     handler.post(new Runnable() {
@@ -308,7 +332,19 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         }
                     });
                 } finally {
-                    handler.sendEmptyMessage(MESSAGE_REFRESH);
+                    long tEnd = System.currentTimeMillis();
+                    if (tEnd - tStart < 500) {
+                        try {
+                            Thread.sleep(500 + tStart - tEnd);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (firstDoRefresh) {
+                        handler.sendEmptyMessage(MESSAGE_CLEAR_AND_REFRESH);
+                    } else {
+                        handler.sendEmptyMessage(MESSAGE_REFRESH);
+                    }
                 }
             }
         }.start();

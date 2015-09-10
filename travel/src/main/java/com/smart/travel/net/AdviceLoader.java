@@ -1,6 +1,11 @@
 package com.smart.travel.net;
 
+import android.content.Context;
+
+import com.smart.travel.AdviceFragment;
+import com.smart.travel.RadarFragment;
 import com.smart.travel.model.RadarItem;
+import com.smart.travel.utils.FileUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,10 +19,20 @@ import java.util.List;
  */
 public class AdviceLoader {
 
-    public static List<RadarItem> load(int page) throws Exception {
+    public static List<RadarItem> load(Context context, int page) throws Exception {
         HttpRequest request = new HttpRequest();
         String jsonString = request.doGet("http://121.40.165.84/travel/Index/get_travel_v2?p=" + page + "&tab=type:" + URLEncoder.encode("锦囊", "utf-8"));
 
+
+        if (page == 1) {
+            FileUtils.writeFile(context, AdviceFragment.ADVICE_LISTVIEW_HISTORY_FILE, jsonString.getBytes("utf-8"));
+        }
+
+
+        return parse(jsonString);
+    }
+
+    public static List<RadarItem> parse(String jsonString) throws Exception {
         List<RadarItem> listItems = new ArrayList<>();
 
         JSONObject parentObj = new JSONObject(jsonString);
@@ -40,20 +55,21 @@ public class AdviceLoader {
             String author = dataObject.getString("author");
             int showType = dataObject.getInt("show_type");
 
-            RadarItem finderItem = new RadarItem();
-            finderItem.setId(id);
-            finderItem.setTitle(title);
-            finderItem.setPubdate(pubdate);
-            finderItem.setImage(image);
-            finderItem.setUrl(url);
-            finderItem.setType(type);
-            finderItem.setAuthor(author);
-            finderItem.setShowType(showType);
+            RadarItem radarItem = new RadarItem();
+            radarItem.setId(id);
+            radarItem.setTitle(title);
+            radarItem.setPubdate(pubdate);
+            radarItem.setImage(image);
+            radarItem.setUrl(url);
+            radarItem.setType(type);
+            radarItem.setAuthor(author);
+            radarItem.setShowType(showType);
 
-            listItems.add(finderItem);
+            listItems.add(radarItem);
         }
 
         return listItems;
     }
+
 
 }
