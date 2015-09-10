@@ -16,7 +16,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.update.UmengUpdateAgent;
 
 import java.io.File;
-import java.text.DecimalFormat;
 
 public class SettingsFragment extends Fragment {
     private static final String TAG = "SettingsFragment";
@@ -66,6 +65,9 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 cleanCache();
+                File cache = ImageLoader.getInstance().getDiskCache().getDirectory();
+                String size = formatCacheResult(getFileSize(cache));
+                cacheSize.setText(size);
             }
         });
     }
@@ -97,5 +99,6 @@ public class SettingsFragment extends Fragment {
 
     private void cleanCache() {
         ImageLoader.getInstance().clearDiskCache();
+
     }
 }

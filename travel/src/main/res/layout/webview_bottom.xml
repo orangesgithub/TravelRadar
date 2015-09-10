@@ -1,70 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="45dp"
     android:orientation="horizontal">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btn_url_back"
             style="?android:borderlessButtonStyle"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/back_100_disabled" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
         <ImageButton
             android:id="@+id/btn_url_forward"
             style="?android:borderlessButtonStyle"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/forward_100_disabled" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
         <ImageButton
             android:id="@+id/btn_url_refresh"
             style="?android:borderlessButtonStyle"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/refresh_100" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
         <ImageButton
             android:id="@+id/btn_url_share"
             style="?android:borderlessButtonStyle"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/share_100" />
-    </LinearLayout>
 </LinearLayout>
