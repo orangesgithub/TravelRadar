@@ -61,6 +61,9 @@ public class UMSocialHelper {
         mController.getConfig().setSsoHandler(new SinaSsoHandler());
 
         mController.getConfig().removePlatform(SHARE_MEDIA.TENCENT);
+
+        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE, SHARE_MEDIA.SINA);
         mActivity = activity;
     }
 

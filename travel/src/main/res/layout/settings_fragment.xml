@@ -83,28 +83,51 @@
             android:layout_height="45dp"
             android:background="@color/color_white"></RelativeLayout>
 
-        <RelativeLayout
+        <!-- smart setting -->
+        <LinearLayout
+            android:id="@+id/cache_item"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginTop="20dp"
-            android:background="@color/color_white"></RelativeLayout>
+            android:background="@drawable/setting_bg_selector">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:layout_marginLeft="20dp"
+                android:text="@string/setting_clear_cache"/>
 
-        <LinearLayout
+            <TextView
+                android:id="@+id/cache_size"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|right"
+                android:layout_marginRight="30dp" />
+        </LinearLayout>
+        <Space
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/color_white">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:background="@color/color_setting_sep" />
-        </LinearLayout>
-
-        <RelativeLayout
+            android:background="@color/color_setting_sep" />
+        <LinearLayout
+            android:id="@+id/version_item"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@color/color_white"></RelativeLayout>
+            android:background="@drawable/setting_bg_selector">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:layout_marginLeft="20dp"
+                android:text="@string/setting_check_version"/>
+
+            <TextView
+                android:id="@+id/version_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|right"
+                android:layout_marginRight="30dp" />
+        </LinearLayout>
     </LinearLayout>
 </com.smart.travel.widget.ElasticScrollView>

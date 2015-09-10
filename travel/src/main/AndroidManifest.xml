@@ -57,6 +57,15 @@
             android:theme="@style/Theme.AppCompat.Light"
             android:screenOrientation="portrait">
         </activity>
+        <!-- ############ 自动更新的Service 和下载对话框 ############## -->
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
         <!-- ###################添加UmengAppkey###################### -->
         <meta-data
             android:name="UMENG_APPKEY"
