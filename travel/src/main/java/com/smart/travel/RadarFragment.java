@@ -140,7 +140,6 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
-                Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
                 if (!footerViewLoadingVisiable && totalItemCount > visibleItemCount) {
                     ticketListView.addFooterView(footerViewLoading);
                     ticketListView.setFooterDividersEnabled(false);
@@ -163,7 +162,6 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         try {
             if (FileUtils.fileExists(getActivity(), RADAR_LISTVIEW_HISTORY_FILE)) {
                 updateItems = TicketLoader.parse(FileUtils.readFile(getActivity(), RADAR_LISTVIEW_HISTORY_FILE));
-                handler.sendEmptyMessage(MESSAGE_REFRESH);
             } else {
                 updateItems = new ArrayList<>();
             }
@@ -215,7 +213,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                     }
                     break;
                 case MESSAGE_CLEAR_AND_REFRESH:
-                    Log.d(TAG, "message do refresh, updateItems size: " + updateItems.size());
+                    Log.d(TAG, "message do clear and refresh, updateItems size: " + updateItems.size());
                     if (updateItems.size() > 0) {
                         listViewAdapter.getAllData().clear();
                     }
@@ -255,7 +253,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         new Thread() {
             @Override
             public void run() {
-                updateItems = new ArrayList<>(24);
+                updateItems = new ArrayList<>(32);
                 Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
                     for (RadarItem item : listViewAdapter.getAllData()) {
@@ -299,7 +297,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
                 int page = 0;
                 boolean loadFinished = false;
-                updateItems = new ArrayList<>(16);
+                updateItems = new ArrayList<>(32);
                 Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
                     for (RadarItem item : listViewAdapter.getAllData()) {

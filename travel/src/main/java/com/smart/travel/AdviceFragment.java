@@ -99,7 +99,6 @@ public class AdviceFragment extends Fragment {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
-                Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
                 if (!footerViewLoadingVisiable && totalItemCount > visibleItemCount) {
                     adviceListView.addFooterView(footerViewLoading);
                     adviceListView.setFooterDividersEnabled(false);
@@ -246,6 +245,12 @@ public class AdviceFragment extends Fragment {
                     Log.d(TAG, "load finished");
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "加载数据失败", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } finally {
                     long tEnd = System.currentTimeMillis();
                     if (tEnd - tStart < 500) {

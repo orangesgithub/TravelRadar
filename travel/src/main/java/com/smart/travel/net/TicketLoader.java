@@ -26,12 +26,11 @@ public class TicketLoader {
             FileUtils.writeFile(context, RadarFragment.RADAR_LISTVIEW_HISTORY_FILE, jsonString.getBytes("utf-8"));
         }
 
-
         return parse(jsonString);
     }
 
     public static List<RadarItem> parse(String jsonString) throws Exception {
-        List<RadarItem> listItems = new ArrayList<>();
+        List<RadarItem> listItems = new ArrayList<>(32);
 
         JSONObject parentObj = new JSONObject(jsonString);
         JSONObject variablesObj = parentObj.getJSONObject("Variables");
