@@ -31,7 +31,9 @@
         <activity
             android:name=".WebActivity"
             android:screenOrientation="portrait" />
-        <!-- ###################SDK分享编辑页################# -->
+        <activity android:name=".AboutActivity"
+            android:screenOrientation="portrait" />
+        <!-- ################### SDK分享编辑页 ################# -->
         <activity
             android:name="com.umeng.socialize.view.ShareActivity"
             android:configChanges="orientation|keyboard"
@@ -39,7 +41,6 @@
             android:noHistory="true"
             android:theme="@style/Theme.UMDialog"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
         <!-- ############ QQ空间和QQ SSO授权的Activity注册 ############ -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
@@ -66,6 +67,12 @@
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
+        <!-- ###################添加用户反馈界面###################### -->
+        <activity
+            android:name="com.umeng.fb.ConversationActivity"
+            android:label="@string/umeng_fb_title"
+            android:launchMode="singleTop"/>
+        <activity android:name="com.umeng.fb.HelpActivity"/>
         <!-- ###################添加UmengAppkey###################### -->
         <meta-data
             android:name="UMENG_APPKEY"

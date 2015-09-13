@@ -2,6 +2,7 @@ package com.smart.travel;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -9,13 +10,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.fb.SyncListener;
+import com.umeng.fb.model.Conversation;
+import com.umeng.fb.model.Reply;
+import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 import java.io.File;
+import java.util.List;
 
 public class SettingsFragment extends Fragment {
     private static final String TAG = "SettingsFragment";
@@ -23,17 +30,26 @@ public class SettingsFragment extends Fragment {
     private TextView versionCode;
     private TextView cacheSize;
 
+    private ImageView msgReminder;
+
     private LinearLayout versionItem;
     private LinearLayout cacheItem;
+
+    private LinearLayout feedbackItem;
+    private LinearLayout aboutUsItem;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.settings_fragment, container, false);
         versionCode = (TextView)content.findViewById(R.id.version_name);
         cacheSize = (TextView)content.findViewById(R.id.cache_size);
+        msgReminder = (ImageView)content.findViewById(R.id.msg_reminder);
 
         versionItem = (LinearLayout)content.findViewById(R.id.version_item);
         cacheItem = (LinearLayout)content.findViewById(R.id.cache_item);
+
+        feedbackItem = (LinearLayout)content.findViewById(R.id.feedback_item);
+        aboutUsItem = (LinearLayout)content.findViewById(R.id.about_item);
         return content;
     }
 
@@ -70,7 +86,46 @@ public class SettingsFragment extends Fragment {
                 cacheSize.setText(size);
             }
         });
+
+        feedbackItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FeedbackAgent agent = new FeedbackAgent(getActivity());
+                agent.startFeedbackActivity();
+            }
+        });
+
+        aboutUsItem.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AboutActivity.class);
+                intent.putExtra("version", versionCode.getText());
+                startActivity(intent);
+            }
+        });
     }
+
+    public void onResume() {
+        FeedbackAgent agent = new FeedbackAgent(getActivity());
+        Conversation conversation = agent.getDefaultConversation();
+        conversation.sync(new SyncListener() {
+            @Override
+            public void onReceiveDevReply(List<Reply> list) {
+                if (list.size() > 0) {
+                    msgReminder.setVisibility(View.VISIBLE);
+                } else {
+                    msgReminder.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onSendUserReply(List<Reply> list) {
+
+            }
+        });
+        super.onResume();
+    }
+
 
     public long getFileSize(File f) {
         long size = 0;

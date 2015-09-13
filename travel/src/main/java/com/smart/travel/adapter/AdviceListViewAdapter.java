@@ -23,9 +23,6 @@ public class AdviceListViewAdapter extends BaseAdapter {
     private List<RadarItem> listItems = new ArrayList<RadarItem>();
     private LayoutInflater listContainer;
 
-    private DisplayImageOptions options = new DisplayImageOptions.Builder().
-            showImageOnLoading(R.drawable.loading).showImageOnFail(R.drawable.loading).cacheInMemory(true).build();
-
     public AdviceListViewAdapter(Context context) {
         this.context = context;
         this.listContainer = LayoutInflater.from(context);
@@ -76,7 +73,7 @@ public class AdviceListViewAdapter extends BaseAdapter {
         briefTextView.setText(item.getTitle());
 
 
-        ImageLoader.getInstance().displayImage(item.getImage(), imageView, options);
+        ImageLoader.getInstance().displayImage(item.getImage(), imageView);
 
         return convertView;
     }
