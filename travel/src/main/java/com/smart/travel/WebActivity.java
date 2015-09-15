@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
@@ -49,9 +50,11 @@ public class WebActivity extends AppCompatActivity {
         TextView textTitle = (TextView) findViewById(R.id.title_text);
         textTitle.setText(title);
 
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -82,6 +85,7 @@ public class WebActivity extends AppCompatActivity {
         });
         webView.setWebChromeClient(new CustomWebViewClient());
 
+        webView.loadUrl("javascript：alert('alert test')");// 调用js函数
         webView.loadUrl(url);
 
 
@@ -132,13 +136,6 @@ public class WebActivity extends AppCompatActivity {
             }
             super.onProgressChanged(view, newProgress);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_web, menu);
-        return true;
     }
 
     @Override
