@@ -18,11 +18,11 @@
 
             <ImageView
                 android:id="@+id/radar_icon"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/radar_128"
                 android:scaleType="fitXY" />
 
@@ -54,6 +54,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="36dp"
+                android:padding="20dp"
                 android:background="@drawable/radar_qrcode_short"
                 android:scaleType="fitXY" />
         </RelativeLayout>

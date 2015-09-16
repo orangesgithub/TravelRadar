@@ -28,8 +28,13 @@
     <string name="setting_check_version">检查更新</string>
     <string name="setting_user_feedback">用户反馈</string>
     <string name="setting_about_us">关于我们</string>
-    <string name="setting_public_number">公众号：travel_radar</string>
+    <string name="setting_weixin_number">微信公众号：travel_radar</string>
+    <string name="setting_weibo_number">微博账号：http://weibo.com/travelradar</string>
     <string name="qrcode_introduce">扫一扫，关注旅行雷达微信公众号</string>
+
+    <string name="radar_introduce">
+        旅行雷达是客观独立的旅行信息提供平台，目的是为自由行的朋友们提供优质优价的机票信息，线路指南和旅行规划。目前覆盖了世界主要旅行目的地，监控60余家连通中国或具有延伸特质的航空公司的数据库变动。
+    </string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
