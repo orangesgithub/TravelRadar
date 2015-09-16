@@ -29,6 +29,7 @@
     <string name="setting_user_feedback">用户反馈</string>
     <string name="setting_about_us">关于我们</string>
     <string name="setting_public_number">公众号：travel_radar</string>
+    <string name="qrcode_introduce">扫一扫，关注旅行雷达微信公众号</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

@@ -1,12 +1,14 @@
 package com.smart.travel;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ public class SettingsFragment extends Fragment {
     private TextView versionCode;
     private TextView cacheSize;
 
+    private ImageView imgQrcode;
     private ImageView msgReminder;
 
     private LinearLayout versionItem;
@@ -38,18 +41,41 @@ public class SettingsFragment extends Fragment {
     private LinearLayout feedbackItem;
     private LinearLayout aboutUsItem;
 
+    private Dialog qrCodeDialog;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.settings_fragment, container, false);
-        versionCode = (TextView)content.findViewById(R.id.version_name);
-        cacheSize = (TextView)content.findViewById(R.id.cache_size);
-        msgReminder = (ImageView)content.findViewById(R.id.msg_reminder);
+        versionCode = (TextView) content.findViewById(R.id.version_name);
+        cacheSize = (TextView) content.findViewById(R.id.cache_size);
+        imgQrcode = (ImageView) content.findViewById(R.id.radar_qrcode);
+        msgReminder = (ImageView) content.findViewById(R.id.msg_reminder);
 
-        versionItem = (LinearLayout)content.findViewById(R.id.version_item);
-        cacheItem = (LinearLayout)content.findViewById(R.id.cache_item);
+        versionItem = (LinearLayout) content.findViewById(R.id.version_item);
+        cacheItem = (LinearLayout) content.findViewById(R.id.cache_item);
 
-        feedbackItem = (LinearLayout)content.findViewById(R.id.feedback_item);
-        aboutUsItem = (LinearLayout)content.findViewById(R.id.about_item);
+        feedbackItem = (LinearLayout) content.findViewById(R.id.feedback_item);
+        aboutUsItem = (LinearLayout) content.findViewById(R.id.about_item);
+
+        imgQrcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qrCodeDialog = new Dialog(getActivity(), R.style.FullHeightDialog);
+                qrCodeDialog.setContentView(R.layout.qrcode_dialog);
+
+                View.OnClickListener listener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        qrCodeDialog.dismiss();
+                    }
+                };
+
+                qrCodeDialog.findViewById(R.id.wx_public_layout).setOnClickListener(listener);
+
+                qrCodeDialog.show();
+            }
+        });
+
         return content;
     }
 
@@ -95,7 +121,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        aboutUsItem.setOnClickListener(new View.OnClickListener(){
+        aboutUsItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AboutActivity.class);
@@ -126,7 +152,6 @@ public class SettingsFragment extends Fragment {
         super.onResume();
     }
 
-
     public long getFileSize(File f) {
         long size = 0;
         File flist[] = f.listFiles();
@@ -144,7 +169,7 @@ public class SettingsFragment extends Fragment {
         Log.d(TAG, "size:" + size);
         double sizeM = size / (1024 * 1024 * 1.0);
         // Keep 2 decimal
-        double result = (double)Math.round(sizeM*100)/100;
+        double result = (double) Math.round(sizeM * 100) / 100;
         return result + "M";
     }
 
@@ -156,4 +181,5 @@ public class SettingsFragment extends Fragment {
         ImageLoader.getInstance().clearDiskCache();
 
     }
+
 }

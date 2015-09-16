@@ -85,9 +85,7 @@ public class WebActivity extends AppCompatActivity {
         });
         webView.setWebChromeClient(new CustomWebViewClient());
 
-        webView.loadUrl("javascript：alert('alert test')");// 调用js函数
         webView.loadUrl(url);
-
 
         shareButton = (ImageButton) findViewById(R.id.btn_url_share);
         backButton = (ImageButton) findViewById(R.id.btn_url_back);
