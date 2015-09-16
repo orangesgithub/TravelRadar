@@ -6,9 +6,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +62,8 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
                 qrCodeDialog = new Dialog(getActivity(), R.style.FullHeightDialog);
                 qrCodeDialog.setContentView(R.layout.qrcode_dialog);
+                qrCodeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(getActivity().getResources().getColor(android.R.color.transparent)));
+                qrCodeDialog.setCanceledOnTouchOutside(true);
 
                 View.OnClickListener listener = new View.OnClickListener() {
                     @Override
