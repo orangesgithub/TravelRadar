@@ -1,6 +1,5 @@
 package com.smart.travel;
 
-
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.AdviceLoader;
-import com.smart.travel.net.TicketLoader;
 import com.smart.travel.utils.FileUtils;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -50,15 +48,18 @@ public class AdviceFragment extends Fragment {
     private List<RadarItem> updateItems;
     private int lastItem;
     private boolean isLoadingData = false;
-    private boolean footerViewLoadingVisiable = false;
+    private boolean footerViewLoadingVisible = false;
 
     // 第一次进入页面的时候，会首先显示本地数据，当网络数据下载完毕的时候，会删除ListView中的本地数据并显示最新的数据
     private boolean firstDoRefresh = true;
 
+    private Handler handler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        listViewAdapter = new AdviceListViewAdapter(getActivity());
         super.onCreate(savedInstanceState);
+        handler = new UiHandler(this);
+        listViewAdapter = new AdviceListViewAdapter(getActivity());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,16 +100,16 @@ public class AdviceFragment extends Fragment {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
-                if (!footerViewLoadingVisiable && totalItemCount > visibleItemCount) {
+                if (!footerViewLoadingVisible && totalItemCount > visibleItemCount) {
                     adviceListView.addFooterView(footerViewLoading);
                     adviceListView.setFooterDividersEnabled(false);
-                    footerViewLoadingVisiable = true;
+                    footerViewLoadingVisible = true;
                 }
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastItem >= listViewAdapter.getCount() && footerViewLoadingVisiable
+                if (lastItem >= listViewAdapter.getCount() && footerViewLoadingVisible
                         && scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && !isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "start to pull new list");
@@ -130,46 +131,70 @@ public class AdviceFragment extends Fragment {
         }
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_REFRESH:
-                    Log.d(TAG, "message do refresh, updateItems size: " + updateItems.size());
-                    listViewAdapter.addData(updateItems);
-                    listViewAdapter.notifyDataSetChanged();
-                    pullToRefreshView.setRefreshing(false);
+    public void onDestroy() {
+        // remove all messages, in case fragment or activity is destroyed
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
 
-                    if (firstDoRefresh) {
-                        pullToRefreshView.setRefreshing(true);
-                        doRefresh();
-                    }
-                    break;
-                case MESSAGE_CLEAR_AND_REFRESH:
-                    Log.d(TAG, "message do refresh, updateItems size: " + updateItems.size());
-                    if (updateItems.size() > 0) {
-                        listViewAdapter.getAllData().clear();
-                    }
-                    listViewAdapter.addData(updateItems);
-                    listViewAdapter.notifyDataSetChanged();
-                    pullToRefreshView.setRefreshing(false);
-                    firstDoRefresh = false;
-                    currPage = 1;
-                    break;
-                case MESSAGE_LOAD_MORE:
-                    adviceListView.removeFooterView(footerViewLoading);
-                    adviceListView.setFooterDividersEnabled(true);
-                    footerViewLoadingVisiable = false;
-                    isLoadingData = false;
-                    listViewAdapter.addData(updateItems);
-                    listViewAdapter.notifyDataSetChanged();
-                    break;
-                default:
-                    break;
-            }
+    private static class UiHandler extends WeakReferenceHandler<AdviceFragment> {
+
+        public UiHandler(AdviceFragment fragment) {
+            super(fragment);
         }
 
-    };
+        @Override
+        protected void handleMessage(AdviceFragment fragment, Message msg) {
+            if (fragment != null) {
+                switch (msg.what) {
+                    case MESSAGE_REFRESH:
+                        fragment.handleRefreshMsg();
+                        break;
+                    case MESSAGE_CLEAR_AND_REFRESH:
+                        fragment.handleCleanRefreshMsg();
+                        break;
+                    case MESSAGE_LOAD_MORE:
+                        fragment.handleLoadMoreMsg();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    private void handleRefreshMsg() {
+        Log.d(TAG, "message do refresh, updateItems size: " + updateItems.size());
+        listViewAdapter.addData(updateItems);
+        listViewAdapter.notifyDataSetChanged();
+        pullToRefreshView.setRefreshing(false);
+
+        if (firstDoRefresh) {
+            pullToRefreshView.setRefreshing(true);
+            doRefresh();
+        }
+    }
+
+    private void handleCleanRefreshMsg() {
+        Log.d(TAG, "message do refresh, updateItems size: " + updateItems.size());
+        if (updateItems.size() > 0) {
+            listViewAdapter.getAllData().clear();
+        }
+        listViewAdapter.addData(updateItems);
+        listViewAdapter.notifyDataSetChanged();
+        pullToRefreshView.setRefreshing(false);
+        firstDoRefresh = false;
+        currPage = 1;
+    }
+
+    private void handleLoadMoreMsg() {
+        adviceListView.removeFooterView(footerViewLoading);
+        adviceListView.setFooterDividersEnabled(true);
+        footerViewLoadingVisible = false;
+        isLoadingData = false;
+        listViewAdapter.addData(updateItems);
+        listViewAdapter.notifyDataSetChanged();
+    }
 
     private void loadMore() {
         new Thread() {

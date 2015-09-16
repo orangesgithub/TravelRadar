@@ -1,6 +1,5 @@
 package com.smart.travel;
 
-
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;

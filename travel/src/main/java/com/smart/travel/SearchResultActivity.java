@@ -8,7 +8,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.SearchLoader;
-import com.smart.travel.net.TicketLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -48,13 +46,16 @@ public class SearchResultActivity extends AppCompatActivity {
     private LinearLayout footerViewLoading;
     private int lastItem;
     private boolean isLoadingData = false;
-    private boolean footerViewLoadingVisiable = false;
+    private boolean footerViewLoadingVisible = false;
 
     private ProgressDialog dialog;
+
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handler = new UiHandler(this);
         setContentView(R.layout.activity_search_result);
 
         String title = getIntent().getStringExtra("title");
@@ -114,16 +115,16 @@ public class SearchResultActivity extends AppCompatActivity {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
                 Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
-                if (!footerViewLoadingVisiable && totalItemCount > visibleItemCount) {
+                if (!footerViewLoadingVisible && totalItemCount > visibleItemCount) {
                     listView.addFooterView(footerViewLoading);
                     listView.setFooterDividersEnabled(false);
-                    footerViewLoadingVisiable = true;
+                    footerViewLoadingVisible = true;
                 }
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastItem >= listViewAdapter.getCount() && footerViewLoadingVisiable
+                if (lastItem >= listViewAdapter.getCount() && footerViewLoadingVisible
                         && scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && !isLoadingData) {
                     isLoadingData = true;
                     Log.d(TAG, "start to pull new list");
@@ -139,27 +140,46 @@ public class SearchResultActivity extends AppCompatActivity {
         loadMore();
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_REFRESH:
-                    listViewAdapter.notifyDataSetChanged();
-                    pullToRefreshView.setRefreshing(false);
-                    break;
-                case MESSAGE_LOAD_MORE:
-                    listView.removeFooterView(footerViewLoading);
-                    listView.setFooterDividersEnabled(true);
-                    footerViewLoadingVisiable = false;
-                    isLoadingData = false;
-                    listViewAdapter.notifyDataSetChanged();
-                    break;
-                default:
-                    break;
-            }
+    public void onDestroy() {
+        // remove all messages, in case fragment or activity is destroyed
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+    private static class UiHandler extends WeakReferenceHandler<SearchResultActivity> {
+        public UiHandler(SearchResultActivity activity) {
+            super(activity);
         }
 
-    };
+        @Override
+        protected void handleMessage(SearchResultActivity activity, Message msg) {
+            if (activity != null) {
+                switch (msg.what) {
+                    case MESSAGE_REFRESH:
+                        activity.handleRefresh();
+                        break;
+                    case MESSAGE_LOAD_MORE:
+                        activity.handleLoadMore();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    private void handleRefresh() {
+        listViewAdapter.notifyDataSetChanged();
+        pullToRefreshView.setRefreshing(false);
+    }
+
+    private void handleLoadMore() {
+        listView.removeFooterView(footerViewLoading);
+        listView.setFooterDividersEnabled(true);
+        footerViewLoadingVisible = false;
+        isLoadingData = false;
+        listViewAdapter.notifyDataSetChanged();
+    }
 
     private void loadMore() {
         new Thread() {

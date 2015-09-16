@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.fb.SyncListener;
@@ -109,6 +110,8 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 cleanCache();
+                String msg = getResources().getString(R.string.setting_clear_cache);
+                Toast.makeText(getActivity(), msg + cacheSize.getText(),Toast.LENGTH_SHORT).show();
                 File cache = ImageLoader.getInstance().getDiskCache().getDirectory();
                 String size = formatCacheResult(getFileSize(cache));
                 cacheSize.setText(size);
