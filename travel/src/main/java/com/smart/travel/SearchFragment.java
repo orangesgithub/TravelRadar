@@ -305,17 +305,7 @@ public class SearchFragment extends Fragment {
                         updateSearchHistory(si.name, si.keyword);
                     }
                 });
-                textViewSearch.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                v.setBackgroundResource(R.drawable.search_item_click);
-                                break;
-                        }
-                        return false;
-                    }
-                });
+                textViewSearch.setBackgroundResource(R.drawable.search_item_click);
 
                 flowLayoutItems.addView(textViewSearch);
             }

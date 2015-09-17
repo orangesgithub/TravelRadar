@@ -16,7 +16,7 @@
     <color name="search_edit_gray">#ffcccccc</color>
 
     <!--custom color for pressed state -->
-    <drawable name="pressed_color">#EDEDED</drawable>
+    <color name="pressed_color">#EDEDED</color>
     <!--transperent color for normal state -->
-    <drawable name="normal_color">#00FFFFFF</drawable>
+    <color name="normal_color">#FFFFFF</color>
 </resources>
