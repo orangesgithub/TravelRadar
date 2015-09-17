@@ -88,6 +88,8 @@ public class AdviceFragment extends Fragment {
         });
 
         createFooterView();
+        adviceListView.addFooterView(footerViewLoading);
+        footerViewLoading.setVisibility(View.GONE);
 
         return content;
     }
@@ -101,7 +103,7 @@ public class AdviceFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
                 if (!footerViewLoadingVisible && totalItemCount > visibleItemCount) {
-                    adviceListView.addFooterView(footerViewLoading);
+                    footerViewLoading.setVisibility(View.VISIBLE);
                     adviceListView.setFooterDividersEnabled(false);
                     footerViewLoadingVisible = true;
                 }
@@ -188,7 +190,7 @@ public class AdviceFragment extends Fragment {
     }
 
     private void handleLoadMoreMsg() {
-        adviceListView.removeFooterView(footerViewLoading);
+        footerViewLoading.setVisibility(View.GONE);
         adviceListView.setFooterDividersEnabled(true);
         footerViewLoadingVisible = false;
         isLoadingData = false;

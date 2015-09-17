@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.smart.travel.adapter.TravelListViewAdapter;
 import com.smart.travel.model.RadarItem;
+import com.smart.travel.net.SearchLoader;
 import com.smart.travel.net.TicketLoader;
 import com.smart.travel.utils.FileUtils;
 import com.smart.travel.utils.NetworkUtils;
@@ -49,7 +50,6 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     private static final int MESSAGE_REFRESH = 2;
     private static final int MESSAGE_CLEAR_AND_REFRESH = 3;
 
-
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private String[] drawerListItems;
@@ -71,6 +71,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     // 第一次进入页面的时候，会首先显示本地数据，当网络数据下载完毕的时候，会删除ListView中的本地数据并显示最新的数据
     private boolean firstDoRefresh = true;
+    private String keyword;
 
     private Handler handler;
 
@@ -99,9 +100,35 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 drawerLayout.closeDrawers();
-                Intent intent = new Intent(getActivity(), SearchResultActivity.class);
-                intent.putExtra("title", drawerListItems[position]);
-                startActivity(intent);
+
+                String title = drawerListItems[position];
+
+                TextView tv = (TextView) getActivity().findViewById(R.id.title_text);
+                if ("全部".equals(title)) {
+                    keyword = null;
+                    tv.setText(getResources().getString(R.string.app_name));
+                } else if ("长三角".equals(title)) {
+                    keyword = "华东|上海|杭州|南京|宁波|江浙";
+                    tv.setText("长三角");
+                } else if ("珠三角".equals(title)) {
+                    keyword = "广州|深圳|香港|珠三角";
+                    tv.setText("珠三角");
+                } else if ("京津冀".equals(title)) {
+                    keyword = "北京|天津";
+                    tv.setText("京津冀");
+                } else if ("华中".equals(title)) {
+                    keyword = "武汉|长沙";
+                    tv.setText("华中");
+                } else if ("西南".equals(title)) {
+                    keyword = "成都|重庆|昆明|四川";
+                    tv.setText("西南");
+                }
+
+                firstDoRefresh = true;
+                currPage = 0;
+                handler.sendEmptyMessage(MESSAGE_REFRESH);
+
+                Log.d(TAG, "drawerLayout: " + keyword);
             }
         });
 
@@ -130,6 +157,8 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         });
 
         createFooterView();
+        ticketListView.addFooterView(footerViewLoading);
+        footerViewLoading.setVisibility(View.GONE);
 
         return content;
     }
@@ -143,7 +172,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
                 if (!footerViewLoadingVisible && totalItemCount > visibleItemCount) {
-                    ticketListView.addFooterView(footerViewLoading);
+                    footerViewLoading.setVisibility(View.VISIBLE);
                     ticketListView.setFooterDividersEnabled(false);
                     footerViewLoadingVisible = true;
                 }
@@ -245,19 +274,28 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     private void handleCleanRefreshMsg() {
         Log.d(TAG, "message do clear and refresh, updateItems size: " + updateItems.size());
-        if (updateItems.size() > 0) {
-            listViewAdapter.getAllData().clear();
+        if (listViewAdapter.getAllData().size() > 0) {
+            ticketListView.setSelection(0);
         }
-        listViewAdapter.addData(updateItems);
-        listViewAdapter.notifyDataSetChanged();
-        pullToRefreshView.setRefreshing(false);
-        firstDoRefresh = false;
-        currPage = 1;
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (updateItems.size() > 0) {
+                    listViewAdapter.getAllData().clear();
+                }
+                listViewAdapter.addData(updateItems);
+                listViewAdapter.notifyDataSetChanged();
+                pullToRefreshView.setRefreshing(false);
+                firstDoRefresh = false;
+                currPage = 1;
+            }
+        }, 100);
     }
 
     private void handleLoadMoreMsg() {
         Log.d(TAG, "message load more, updateItems size: " + updateItems.size());
-        ticketListView.removeFooterView(footerViewLoading);
+        footerViewLoading.setVisibility(View.GONE);
         ticketListView.setFooterDividersEnabled(true);
         footerViewLoadingVisible = false;
         isLoadingData = false;
@@ -275,7 +313,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadMore() {
-        Log.d(TAG, "doRefresh");
+        Log.d(TAG, "doLoadMore");
         new Thread() {
             @Override
             public void run() {
@@ -286,7 +324,12 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         idSet.add(item.getId());
                     }
                     while (true) {
-                        List<RadarItem> items = TicketLoader.load(getActivity(), currPage + 1);
+                        List<RadarItem> items = null;
+                        if (keyword == null) {
+                            items = TicketLoader.load(getActivity(), currPage + 1);
+                        } else {
+                            items = SearchLoader.load(currPage + 1, keyword);
+                        }
                         for (RadarItem item : items) {
                             if (!idSet.contains(item.getId())) {
                                 updateItems.add(item);
@@ -330,7 +373,12 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                         idSet.add(item.getId());
                     }
                     while (!loadFinished) {
-                        List<RadarItem> items = TicketLoader.load(getActivity(), page + 1);
+                        List<RadarItem> items = null;
+                        if (keyword == null) {
+                            items = TicketLoader.load(getActivity(), page + 1);
+                        } else {
+                            items = SearchLoader.load(page + 1, keyword);
+                        }
                         for (RadarItem item : items) {
                             if (!idSet.contains(item.getId()) || firstDoRefresh) {
                                 updateItems.add(item);
