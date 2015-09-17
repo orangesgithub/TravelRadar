@@ -107,7 +107,10 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
 
+
         createFooterView();
+        listView.addFooterView(footerViewLoading);
+        footerViewLoading.setVisibility(View.GONE);
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -116,7 +119,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 lastItem = firstVisibleItem + visibleItemCount;
                 Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
                 if (!footerViewLoadingVisible && totalItemCount > visibleItemCount) {
-                    listView.addFooterView(footerViewLoading);
+                    footerViewLoading.setVisibility(View.VISIBLE);
                     listView.setFooterDividersEnabled(false);
                     footerViewLoadingVisible = true;
                 }
@@ -174,7 +177,7 @@ public class SearchResultActivity extends AppCompatActivity {
     }
 
     private void handleLoadMore() {
-        listView.removeFooterView(footerViewLoading);
+        footerViewLoading.setVisibility(View.GONE);
         listView.setFooterDividersEnabled(true);
         footerViewLoadingVisible = false;
         isLoadingData = false;
