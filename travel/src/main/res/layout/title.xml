@@ -10,6 +10,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textSize="15sp"
+        android:clickable="false"
         style="?android:attr/borderlessButtonStyle"/>
 
     <TextView
