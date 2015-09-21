@@ -31,7 +31,7 @@ import com.smart.travel.net.SearchLoader;
 import com.smart.travel.net.TicketLoader;
 import com.smart.travel.utils.FileUtils;
 import com.smart.travel.utils.NetworkUtils;
-import com.yalantis.phoenix.PullToRefreshView;
+import com.yalantis.taurus.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.HashSet;

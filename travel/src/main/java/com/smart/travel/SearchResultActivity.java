@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.SearchLoader;
-import com.yalantis.phoenix.PullToRefreshView;
+import com.yalantis.taurus.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.HashSet;

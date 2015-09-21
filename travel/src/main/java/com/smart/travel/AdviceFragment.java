@@ -22,7 +22,7 @@ import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
 import com.smart.travel.net.AdviceLoader;
 import com.smart.travel.utils.FileUtils;
-import com.yalantis.phoenix.PullToRefreshView;
+import com.yalantis.taurus.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
