@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -58,24 +59,7 @@ public class SearchResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_result);
 
         String title = getIntent().getStringExtra("title");
-        if (getIntent().hasExtra("keyword")) {
-            keyword = getIntent().getStringExtra("keyword");
-        } else {
-            if ("全部".equals(title)) {
-                keyword = "全部";
-            } else if ("长三角".equals(title)) {
-                keyword = "华东|上海|杭州|南京|宁波|江浙";
-            } else if ("珠三角".equals(title)) {
-                keyword = "广州|深圳|香港|珠三角";
-            } else if ("京津冀".equals(title)) {
-                keyword = "北京|天津";
-            } else if ("华中".equals(title)) {
-                keyword = "武汉|长沙";
-            } else if ("西南".equals(title)) {
-                keyword = "成都|重庆|昆明|四川";
-            }
-        }
-
+        keyword = getIntent().getStringExtra("keyword");
 
         Log.d(TAG, "SearchResultActivity keyword: " + keyword);
 
@@ -197,6 +181,17 @@ public class SearchResultActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            if (listViewAdapter.getCount() == 0) {
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        pullToRefreshView.setRefreshing(false);
+                                        footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.GONE);
+                                        footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.GONE);
+                                        footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.VISIBLE);
+                                    }
+                                });
+                            }
                             Toast.makeText(SearchResultActivity.this, "加载数据失败", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -241,7 +236,19 @@ public class SearchResultActivity extends AppCompatActivity {
                     handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
-                    handler.sendEmptyMessage(MESSAGE_REFRESH);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (listViewAdapter.getCount() == 0) {
+                                pullToRefreshView.setRefreshing(false);
+                                footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.GONE);
+                                footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.GONE);
+                                footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.VISIBLE);
+                            }
+                            Toast.makeText(SearchResultActivity.this, "加载数据失败", Toast.LENGTH_LONG).show();
+                            handler.sendEmptyMessage(MESSAGE_REFRESH);
+                        }
+                    });
                 }
             }
         }.start();
@@ -263,14 +270,18 @@ public class SearchResultActivity extends AppCompatActivity {
     }
 
     private void createFooterView() {
-        footerViewLoading = new LinearLayout(this);
-        footerViewLoading.setOrientation(LinearLayout.HORIZONTAL);
-        footerViewLoading.setGravity(Gravity.CENTER);
-        ProgressBar bar = new ProgressBar(this);
-        TextView textView = new TextView(this);
-        textView.setText("加载中...");
-        footerViewLoading.addView(bar, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        footerViewLoading.addView(textView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        footerViewLoading = (LinearLayout) getLayoutInflater().inflate(R.layout.listview_loading_footer, null);
+        Button btnReload = (Button) footerViewLoading.findViewById(R.id.listview_footer_reload);
+        btnReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.VISIBLE);
+                footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.VISIBLE);
+                footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.GONE);
+                pullToRefreshView.setRefreshing(true);
+                doRefresh();
+            }
+        });
     }
 
 }
