@@ -40,10 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton adviceButton;
     private ImageButton searchButton;
     private ImageButton settingsButton;
-    private TextView radarText;
-    private TextView adviceText;
-    private TextView searchText;
-    private TextView settingsText;
+
 
     private int lastSelectionTab = -1;
 
@@ -74,10 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adviceButton = (ImageButton) findViewById(R.id.btm_tips_btn);
         searchButton = (ImageButton) findViewById(R.id.btm_search_btn);
         settingsButton = (ImageButton) findViewById(R.id.btm_info_btn);
-        radarText = (TextView) findViewById(R.id.btm_radar_text);
-        adviceText = (TextView) findViewById(R.id.btm_tips_text);
-        searchText = (TextView) findViewById(R.id.btm_search_text);
-        settingsText = (TextView) findViewById(R.id.btm_info_text);
 
         LinearLayout radarParent = (LinearLayout) radarButton.getParent();
         radarParent.setOnClickListener(this);
@@ -92,10 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adviceButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
-        radarText.setOnClickListener(this);
-        adviceText.setOnClickListener(this);
-        searchText.setOnClickListener(this);
-        settingsText.setOnClickListener(this);
         // show the first page
         setTabSelection(RADAR_INDEX);
 
@@ -110,16 +99,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v == radarButton || v == radarButton.getParent() || v == radarText) {
+        if (v == radarButton || v == radarButton.getParent()) {
             setTabSelection(RADAR_INDEX);
             changeTitle(RADAR_INDEX);
-        } else if (v == adviceButton || v == adviceButton.getParent() || v == adviceText) {
+        } else if (v == adviceButton || v == adviceButton.getParent()) {
             setTabSelection(ADVICE_INDEX);
             changeTitle(ADVICE_INDEX);
-        } else if (v == searchButton || v == searchButton.getParent() || v == searchText) {
+        } else if (v == searchButton || v == searchButton.getParent()) {
             setTabSelection(SEARCH_INDEX);
             changeTitle(SEARCH_INDEX);
-        } else if (v == settingsButton || v == settingsButton.getParent() || v == settingsText) {
+        } else if (v == settingsButton || v == settingsButton.getParent()) {
             setTabSelection(SETTINGS_INDEX);
             changeTitle(SETTINGS_INDEX);
         }

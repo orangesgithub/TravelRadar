@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.yalantis.phoenix.PullToRefreshView
+    <com.yalantis.taurus.PullToRefreshView
         android:id="@+id/pull_to_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,7 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:dividerHeight="1px"
-            android:fastScrollEnabled="true" />
-    </com.yalantis.phoenix.PullToRefreshView>
+            android:fastScrollEnabled="true"
+            android:background="@color/color_white"/>
+    </com.yalantis.taurus.PullToRefreshView>
 
 </LinearLayout>
