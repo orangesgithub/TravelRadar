@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smart.travel.adapter.AdviceListViewAdapter;
 import com.smart.travel.model.RadarItem;
@@ -47,8 +48,6 @@ public class SearchResultActivity extends AppCompatActivity {
     private int lastItem;
     private boolean isLoadingData = false;
     private boolean footerViewLoadingVisible = false;
-
-    private ProgressDialog dialog;
 
     private Handler handler;
 
@@ -99,6 +98,9 @@ public class SearchResultActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (listViewAdapter.getCount() == 0) {
+                    return;
+                }
                 Intent intent = new Intent(SearchResultActivity.this, WebActivity.class);
                 RadarItem radarItem = (RadarItem) listViewAdapter.getItem(position);
                 intent.putExtra("url", radarItem.getUrl());
@@ -137,9 +139,6 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
 
-        dialog = ProgressDialog.show(this, "",
-                "加载数据...", true);
-        dialog.show();
         loadMore();
     }
 
@@ -195,16 +194,12 @@ public class SearchResultActivity extends AppCompatActivity {
                     currPage++;
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
-                } finally {
-                    if (dialog != null) {
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                                dialog = null;
-                            }
-                        });
-                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(SearchResultActivity.this, "加载数据失败", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             }
         }.start();

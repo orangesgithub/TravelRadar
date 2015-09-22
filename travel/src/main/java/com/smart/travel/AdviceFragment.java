@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -79,6 +80,9 @@ public class AdviceFragment extends Fragment {
         adviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (listViewAdapter.getCount() == 0) {
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), WebActivity.class);
                 RadarItem radarItem = (RadarItem) listViewAdapter.getItem(position);
                 intent.putExtra("url", radarItem.getUrl());
@@ -288,7 +292,19 @@ public class AdviceFragment extends Fragment {
                         }
                     }
                     if (firstDoRefresh) {
-                        handler.sendEmptyMessage(MESSAGE_CLEAR_AND_REFRESH);
+                        if (listViewAdapter.getCount() == 0 && updateItems.size() == 0) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pullToRefreshView.setRefreshing(false);
+                                    footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.GONE);
+                                    footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.GONE);
+                                    footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.VISIBLE);
+                                }
+                            });
+                        } else {
+                            handler.sendEmptyMessage(MESSAGE_CLEAR_AND_REFRESH);
+                        }
                     } else {
                         handler.sendEmptyMessage(MESSAGE_REFRESH);
                     }
@@ -298,14 +314,18 @@ public class AdviceFragment extends Fragment {
     }
 
     private void createFooterView() {
-        footerViewLoading = new LinearLayout(getActivity());
-        footerViewLoading.setOrientation(LinearLayout.HORIZONTAL);
-        footerViewLoading.setGravity(Gravity.CENTER);
-        ProgressBar bar = new ProgressBar(getActivity());
-        TextView textView = new TextView(getActivity());
-        textView.setText("加载中...");
-        footerViewLoading.addView(bar, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        footerViewLoading.addView(textView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        footerViewLoading = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.listview_loading_footer, null);
+        Button btnReload = (Button) footerViewLoading.findViewById(R.id.listview_footer_reload);
+        btnReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.VISIBLE);
+                footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.VISIBLE);
+                footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.GONE);
+                pullToRefreshView.setRefreshing(true);
+                doRefresh();
+            }
+        });
     }
 
 }

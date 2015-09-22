@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -56,6 +57,17 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.search_fragment, container, false);
         searchFrame = (FrameLayout) content.findViewById(R.id.search_frame);
+
+        Button btnReload = (Button) searchFrame.findViewById(R.id.loading_reload_btn);
+        btnReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchFrame.findViewById(R.id.loading_progress_bar).setVisibility(View.VISIBLE);
+                searchFrame.findViewById(R.id.loading_text_view).setVisibility(View.VISIBLE);
+                searchFrame.findViewById(R.id.loading_reload_btn).setVisibility(View.GONE);
+                loadSearchKeywords();
+            }
+        });
 
         searchInner = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.search_fragment_inner, searchFrame, false);
         searchText = (EditText) searchInner.findViewById(R.id.search_text);
@@ -228,6 +240,10 @@ public class SearchFragment extends Fragment {
                     searchFrame.post(new Runnable() {
                         @Override
                         public void run() {
+                            searchFrame.findViewById(R.id.loading_progress_bar).setVisibility(View.GONE);
+                            searchFrame.findViewById(R.id.loading_text_view).setVisibility(View.GONE);
+                            searchFrame.findViewById(R.id.loading_reload_btn).setVisibility(View.VISIBLE);
+
                             Toast.makeText(getActivity(), "加载数据失败", Toast.LENGTH_LONG).show();
                         }
                     });
