@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relativeItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:layout_alignParentLeft="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/loading" />
+
+        <RelativeLayout
+            android:id="@+id/relativeRight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/imageView">
+
+            <TextView
+                android:id="@+id/from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="旅行雷达"
+                android:textSize="9sp" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="2015-08-29"
+                android:textSize="9sp" />
+
+            <TextView
+                android:id="@+id/brief"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/from"
+                android:paddingTop="5dp"
+                android:text="旅游描述"
+                android:textColor="@color/color_text_dark"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
