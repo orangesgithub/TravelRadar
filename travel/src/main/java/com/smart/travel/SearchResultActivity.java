@@ -50,6 +50,8 @@ public class SearchResultActivity extends AppCompatActivity {
     private boolean isLoadingData = false;
     private boolean footerViewLoadingVisible = false;
 
+    private boolean load2LastItem = false; //ListView中的需要显示的数据是否已经加载到末尾
+
     private Handler handler;
 
     @Override
@@ -96,6 +98,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
         createFooterView();
         listView.addFooterView(footerViewLoading);
+        listView.setFooterDividersEnabled(false);
         footerViewLoading.setVisibility(View.GONE);
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -103,10 +106,11 @@ public class SearchResultActivity extends AppCompatActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lastItem = firstVisibleItem + visibleItemCount;
-                Log.d(TAG, "onScroll callback: " + firstVisibleItem + ", " + visibleItemCount + ", " + lastItem);
                 if (!footerViewLoadingVisible && totalItemCount > visibleItemCount) {
-                    footerViewLoading.setVisibility(View.VISIBLE);
-                    listView.setFooterDividersEnabled(false);
+                    if (!load2LastItem) {
+                        footerViewLoading.setVisibility(View.VISIBLE);
+                        listView.setFooterDividersEnabled(false);
+                    }
                     footerViewLoadingVisible = true;
                 }
             }
@@ -161,7 +165,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
     private void handleLoadMore() {
         footerViewLoading.setVisibility(View.GONE);
-        listView.setFooterDividersEnabled(true);
+//        listView.setFooterDividersEnabled(true);
         footerViewLoadingVisible = false;
         isLoadingData = false;
         listViewAdapter.notifyDataSetChanged();
@@ -173,9 +177,32 @@ public class SearchResultActivity extends AppCompatActivity {
             public void run() {
                 try {
                     List<RadarItem> listItems = SearchLoader.load(currPage + 1, keyword);
+                    Set<Integer> idSet = new HashSet<>(listViewAdapter.getCount() * 2);
+                    for (RadarItem item : listViewAdapter.getAllData()) {
+                        idSet.add(item.getId());
+                    }
+                    // 后台服务器搜索页超出总数据条数也会有数据过来，这个做一个判断以回避此bug
+                    for (int i = listItems.size() - 1; i > -1; i--) {
+                        if (idSet.contains(listItems.get(i).getId())) {
+                            listItems.remove(i);
+                            load2LastItem = true; //加载到重复数据，已经加载到
+                        }
+                    }
                     listViewAdapter.addData(listItems);
                     handler.sendEmptyMessage(MESSAGE_LOAD_MORE);
-                    currPage++;
+                    if (listItems.size() > 0) {
+                        currPage++;
+                    }
+                    // ugly code, if possible, should optimize
+                    if (listItems.size() == 0) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(SearchResultActivity.this, "没有更多数据", Toast.LENGTH_SHORT).show();
+                                footerViewLoading.setPadding(0, -1 * footerViewLoading.getHeight(), 0, 0);
+                            }
+                        });
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);
                     handler.post(new Runnable() {

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -183,7 +184,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (index) {
             case RADAR_INDEX:
                 titleRightButton.setVisibility(View.VISIBLE);
-                titleText.setText(R.string.app_name);
+                if (radarFragment.getTitle() != null) {
+                    titleText.setText(radarFragment.getTitle());
+                } else {
+                    titleText.setText(getResources().getString(R.string.app_name));
+                }
                 break;
             case ADVICE_INDEX:
                 titleRightButton.setVisibility(View.INVISIBLE);

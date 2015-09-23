@@ -195,7 +195,7 @@ public class AdviceFragment extends Fragment {
 
     private void handleLoadMoreMsg() {
         footerViewLoading.setVisibility(View.GONE);
-        adviceListView.setFooterDividersEnabled(true);
+//        adviceListView.setFooterDividersEnabled(false);
         footerViewLoadingVisible = false;
         isLoadingData = false;
         listViewAdapter.addData(updateItems);

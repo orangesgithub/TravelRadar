@@ -72,6 +72,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
 
     // 第一次进入页面的时候，会首先显示本地数据，当网络数据下载完毕的时候，会删除ListView中的本地数据并显示最新的数据
     private boolean firstDoRefresh = true;
+    private String title;
     private String keyword;
 
     private Handler handler;
@@ -102,28 +103,25 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 drawerLayout.closeDrawers();
 
-                String title = drawerListItems[position];
+                title = drawerListItems[position];
 
                 TextView tv = (TextView) getActivity().findViewById(R.id.title_text);
                 if ("全部".equals(title)) {
                     keyword = null;
-                    tv.setText(getResources().getString(R.string.app_name));
+                    title = getResources().getString(R.string.app_name);
                 } else if ("长三角".equals(title)) {
                     keyword = "华东|上海|杭州|南京|宁波|江浙";
-                    tv.setText("长三角");
                 } else if ("珠三角".equals(title)) {
                     keyword = "广州|深圳|香港|珠三角";
-                    tv.setText("珠三角");
                 } else if ("京津冀".equals(title)) {
                     keyword = "北京|天津";
-                    tv.setText("京津冀");
                 } else if ("华中".equals(title)) {
                     keyword = "武汉|长沙";
-                    tv.setText("华中");
                 } else if ("西南".equals(title)) {
                     keyword = "成都|重庆|昆明|四川";
-                    tv.setText("西南");
                 }
+
+                tv.setText(title);
 
                 firstDoRefresh = true;
                 currPage = 0;
@@ -454,4 +452,7 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    public String getTitle() {
+        return title;
+    }
 }
