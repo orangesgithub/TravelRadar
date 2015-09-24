@@ -87,13 +87,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adviceButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
-        // show the first page
-        setTabSelection(RADAR_INDEX);
 
         titleRightButton = (Button) findViewById(R.id.title_right_btn);
         titleRightButton.setOnClickListener(radarFragment);
 
         titleText = (TextView) findViewById(R.id.title_text);
+
+        if (savedInstanceState != null) {
+            // the activity has bee destroyed
+            radarFragment = (RadarFragment) getFragmentManager().findFragmentByTag("first");
+            adviceFragment = (AdviceFragment) getFragmentManager().findFragmentByTag("second");
+            searchFragment = (SearchFragment) getFragmentManager().findFragmentByTag("third");
+            settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("fourth");
+            lastSelectionTab = (int) savedInstanceState.get("lastSelectionTab");
+            MobclickAgent.reportError(this, "the activity is destroyed for low memory");
+        } else {
+            // show the first page
+            setTabSelection(RADAR_INDEX);
+        }
 
         MobclickAgent.updateOnlineConfig(this);
         UmengUpdateAgent.update(this);
@@ -150,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case RADAR_INDEX:
                 if (radarFragment == null) {
                     radarFragment = new RadarFragment();
-                    transaction.add(R.id.fragment_container, radarFragment);
+                    transaction.add(R.id.fragment_container, radarFragment, "first");
                 } else {
                     transaction.show(radarFragment);
                 }
@@ -158,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case ADVICE_INDEX:
                 if (adviceFragment == null) {
                     adviceFragment = new AdviceFragment();
-                    transaction.add(R.id.fragment_container, adviceFragment);
+                    transaction.add(R.id.fragment_container, adviceFragment, "second");
                 } else {
                     transaction.show(adviceFragment);
                 }
@@ -166,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case SEARCH_INDEX:
                 if (searchFragment == null) {
                     searchFragment = new SearchFragment();
-                    transaction.add(R.id.fragment_container, searchFragment);
+                    transaction.add(R.id.fragment_container, searchFragment, "third");
                 } else {
                     transaction.show(searchFragment);
                 }
@@ -174,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case SETTINGS_INDEX:
                 if (settingsFragment == null) {
                     settingsFragment = new SettingsFragment();
-                    transaction.add(R.id.fragment_container, settingsFragment);
+                    transaction.add(R.id.fragment_container, settingsFragment, "fourth");
                 } else {
                     transaction.show(settingsFragment);
                 }
@@ -234,6 +245,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDestroy() {
         super.onDestroy();
         ImageLoader.getInstance().destroy();
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("lastSelectionTab", lastSelectionTab);
     }
 
     private BroadcastReceiver networkStateReceiver = new BroadcastReceiver() {
