@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setTabSelection(int index) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
+        Log.d(TAG, "setTabSelection: " + index);
+
         if (lastSelectionTab == RADAR_INDEX) {
             radarButton.setImageDrawable(getResources().getDrawable(R.drawable.tab_radar));
         } else if (lastSelectionTab == ADVICE_INDEX) {
@@ -225,6 +228,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MobclickAgent.onPause(this);
 
         unregisterReceiver(networkStateReceiver);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ImageLoader.getInstance().destroy();
     }
 
     private BroadcastReceiver networkStateReceiver = new BroadcastReceiver() {
