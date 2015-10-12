@@ -161,6 +161,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private void handleRefresh() {
         listViewAdapter.notifyDataSetChanged();
         pullToRefreshView.setRefreshing(false);
+        currPage = 1;
     }
 
     private void handleLoadMore() {
@@ -232,34 +233,12 @@ public class SearchResultActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                int page = 0;
-                boolean loadFinished = false;
-                List<RadarItem> newItems = new ArrayList<>(16);
-                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
-                    for (RadarItem item : listViewAdapter.getAllData()) {
-                        idSet.add(item.getId());
-                    }
-                    while (!loadFinished) {
-                        List<RadarItem> items = SearchLoader.load(page + 1, keyword);
-                        for (RadarItem item : items) {
-                            if (!idSet.contains(item.getId())) {
-                                newItems.add(item);
-                            } else {
-                                loadFinished = true;
-                            }
-                        }
-                        page++;
-                        Log.d(TAG, "loading page: " + page);
-
-                        if (currPage == 0) {
-                            loadFinished = true;
-                        }
-                    }
-
+                    List<RadarItem> updateItems = SearchLoader.load(1, keyword);
                     Log.d(TAG, "load finished");
 
-                    listViewAdapter.addDataBegin(newItems);
+                    listViewAdapter.getAllData().clear();
+                    listViewAdapter.addData(updateItems);
                     handler.sendEmptyMessage(MESSAGE_REFRESH);
                 } catch (Exception e) {
                     Log.e(TAG, "Radar Http Exception", e);

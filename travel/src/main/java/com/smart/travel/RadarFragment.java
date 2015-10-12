@@ -366,34 +366,11 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 long tStart = System.currentTimeMillis();
 
-                int page = 0;
-                boolean loadFinished = false;
-                updateItems = new ArrayList<>(32);
-                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
-                    for (RadarItem item : listViewAdapter.getAllData()) {
-                        idSet.add(item.getId());
-                    }
-                    while (!loadFinished) {
-                        List<RadarItem> items = null;
-                        if (keyword == null) {
-                            items = TicketLoader.load(getActivity(), page + 1);
-                        } else {
-                            items = SearchLoader.load(page + 1, keyword);
-                        }
-                        for (RadarItem item : items) {
-                            if (!idSet.contains(item.getId()) || firstDoRefresh) {
-                                updateItems.add(item);
-                            } else {
-                                loadFinished = true;
-                            }
-                        }
-                        page++;
-                        Log.d(TAG, "loading page: " + page);
-
-                        if (currPage == 0) {
-                            loadFinished = true;
-                        }
+                    if (keyword == null) {
+                        updateItems = TicketLoader.load(getActivity(), 1);
+                    } else {
+                        updateItems = SearchLoader.load(1, keyword);
                     }
 
                     Log.d(TAG, "load finished");
@@ -414,22 +391,18 @@ public class RadarFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                     }
-                    if (firstDoRefresh) {
-                        if (listViewAdapter.getCount() == 0 && updateItems.size() == 0) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pullToRefreshView.setRefreshing(false);
-                                    footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.GONE);
-                                    footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.GONE);
-                                    footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.VISIBLE);
-                                }
-                            });
-                        } else {
-                            handler.sendEmptyMessage(MESSAGE_CLEAR_AND_REFRESH);
-                        }
+                    if (listViewAdapter.getCount() == 0 && updateItems.size() == 0) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                pullToRefreshView.setRefreshing(false);
+                                footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.GONE);
+                                footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.GONE);
+                                footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.VISIBLE);
+                            }
+                        });
                     } else {
-                        handler.sendEmptyMessage(MESSAGE_REFRESH);
+                        handler.sendEmptyMessage(MESSAGE_CLEAR_AND_REFRESH);
                     }
                 }
             }

@@ -248,30 +248,9 @@ public class AdviceFragment extends Fragment {
             @Override
             public void run() {
                 long tStart = System.currentTimeMillis();
-                int page = 0;
-                boolean loadFinished = false;
-                updateItems = new ArrayList<>(16);
-                Set<Integer> idSet = new HashSet<>(listViewAdapter.getAllData().size() * 2);
                 try {
-                    for (RadarItem item : listViewAdapter.getAllData()) {
-                        idSet.add(item.getId());
-                    }
-                    while (!loadFinished) {
-                        List<RadarItem> items = AdviceLoader.load(getActivity(), page + 1);
-                        for (RadarItem item : items) {
-                            if (!idSet.contains(item.getId()) || firstDoRefresh) {
-                                updateItems.add(item);
-                            } else {
-                                loadFinished = true;
-                            }
-                        }
-                        page++;
-                        Log.d(TAG, "loading page: " + page);
+                    updateItems = AdviceLoader.load(getActivity(), 1);
 
-                        if (currPage == 0) {
-                            loadFinished = true;
-                        }
-                    }
 
                     Log.d(TAG, "load finished");
                 } catch (Exception e) {
@@ -291,22 +270,18 @@ public class AdviceFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
-                    if (firstDoRefresh) {
-                        if (listViewAdapter.getCount() == 0 && updateItems.size() == 0) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pullToRefreshView.setRefreshing(false);
-                                    footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.GONE);
-                                    footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.GONE);
-                                    footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.VISIBLE);
-                                }
-                            });
-                        } else {
-                            handler.sendEmptyMessage(MESSAGE_CLEAR_AND_REFRESH);
-                        }
+                    if (listViewAdapter.getCount() == 0 && updateItems.size() == 0) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                pullToRefreshView.setRefreshing(false);
+                                footerViewLoading.findViewById(R.id.listview_footer_progressbar).setVisibility(View.GONE);
+                                footerViewLoading.findViewById(R.id.listview_footer_loading_tip).setVisibility(View.GONE);
+                                footerViewLoading.findViewById(R.id.listview_footer_reload).setVisibility(View.VISIBLE);
+                            }
+                        });
                     } else {
-                        handler.sendEmptyMessage(MESSAGE_REFRESH);
+                        handler.sendEmptyMessage(MESSAGE_CLEAR_AND_REFRESH);
                     }
                 }
             }
