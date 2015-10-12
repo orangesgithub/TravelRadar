@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (radarFragment == null) {
                     radarFragment = new RadarFragment();
                     transaction.add(R.id.fragment_container, radarFragment, "first");
+                    titleRightButton.setOnClickListener(radarFragment);
                 } else {
                     transaction.show(radarFragment);
                 }
