@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
 
+        titleText = (TextView) findViewById(R.id.title_text);
+        lastSelectionTab = RADAR_INDEX;
+
         if (savedInstanceState != null) {
             // the activity has bee destroyed
             radarFragment = (RadarFragment) getFragmentManager().findFragmentByTag("first");
@@ -97,33 +100,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastSelectionTab = (int) savedInstanceState.get("lastSelectionTab");
             MobclickAgent.reportError(this, "the activity is destroyed for low memory");
         } else {
-            // show the first page
-            setTabSelection(RADAR_INDEX);
+
+            MobclickAgent.updateOnlineConfig(this);
+            UmengUpdateAgent.update(this);
+
         }
 
         titleRightButton = (Button) findViewById(R.id.title_right_btn);
-        titleRightButton.setOnClickListener(radarFragment);
-
-        titleText = (TextView) findViewById(R.id.title_text);
-
-        MobclickAgent.updateOnlineConfig(this);
-        UmengUpdateAgent.update(this);
+        setTabSelection(lastSelectionTab);
     }
 
     @Override
     public void onClick(View v) {
         if (v == radarButton || v == radarButton.getParent()) {
             setTabSelection(RADAR_INDEX);
-            changeTitle(RADAR_INDEX);
         } else if (v == adviceButton || v == adviceButton.getParent()) {
             setTabSelection(ADVICE_INDEX);
-            changeTitle(ADVICE_INDEX);
         } else if (v == searchButton || v == searchButton.getParent()) {
             setTabSelection(SEARCH_INDEX);
-            changeTitle(SEARCH_INDEX);
         } else if (v == settingsButton || v == settingsButton.getParent()) {
             setTabSelection(SETTINGS_INDEX);
-            changeTitle(SETTINGS_INDEX);
         }
     }
 
@@ -165,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     transaction.show(radarFragment);
                 }
+                titleRightButton.setOnClickListener(radarFragment);
                 break;
             case ADVICE_INDEX:
                 if (adviceFragment == null) {
@@ -192,6 +189,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         transaction.commit();
+
+        changeTitle(index);
     }
 
     private void changeTitle(int index) {
