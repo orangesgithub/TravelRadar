@@ -88,11 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchButton.setOnClickListener(this);
         settingsButton.setOnClickListener(this);
 
-        titleRightButton = (Button) findViewById(R.id.title_right_btn);
-        titleRightButton.setOnClickListener(radarFragment);
-
-        titleText = (TextView) findViewById(R.id.title_text);
-
         if (savedInstanceState != null) {
             // the activity has bee destroyed
             radarFragment = (RadarFragment) getFragmentManager().findFragmentByTag("first");
@@ -105,6 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // show the first page
             setTabSelection(RADAR_INDEX);
         }
+
+        titleRightButton = (Button) findViewById(R.id.title_right_btn);
+        titleRightButton.setOnClickListener(radarFragment);
+
+        titleText = (TextView) findViewById(R.id.title_text);
 
         MobclickAgent.updateOnlineConfig(this);
         UmengUpdateAgent.update(this);
