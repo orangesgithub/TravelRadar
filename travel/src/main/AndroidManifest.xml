@@ -76,7 +76,7 @@
         <!-- ###################添加UmengAppkey###################### -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="55e6b92967e58e218200112d" />
+            android:value="55edb5e867e58e057c0027b8" />
         <!-- ###############应用的来源，不同的市场不同的value############# -->
         <meta-data
             android:name="UMENG_CHANNEL"
