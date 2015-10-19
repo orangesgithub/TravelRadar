@@ -86,6 +86,7 @@ public class UMSocialHelper {
         // share to WX friends
         WeiXinShareContent weiXinContent = new WeiXinShareContent();
         weiXinContent.setTitle(title);//
+
         weiXinContent.setShareContent(content);
         weiXinContent.setTargetUrl(url);
         // must set, otherwise url is invalid
@@ -94,7 +95,7 @@ public class UMSocialHelper {
 
         // share to WX circle
         CircleShareContent circleContent = new CircleShareContent();
-        circleContent.setTitle(title);
+        circleContent.setTitle(content);
         circleContent.setShareContent(content); //
         circleContent.setTargetUrl(url);
         circleContent.setShareImage(image);
