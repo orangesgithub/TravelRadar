@@ -8,8 +8,8 @@ android {
         applicationId "com.smart.travel"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 10
-        versionName "1.0.1"
+        versionCode 12
+        versionName "1.0.3"
     }
     buildTypes {
         release {
