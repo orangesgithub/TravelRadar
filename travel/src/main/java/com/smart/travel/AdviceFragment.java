@@ -87,6 +87,8 @@ public class AdviceFragment extends Fragment {
                 RadarItem radarItem = (RadarItem) listViewAdapter.getItem(position);
                 intent.putExtra("url", radarItem.getUrl());
                 intent.putExtra("title", radarItem.getAuthor());
+                intent.putExtra("content", radarItem.getTitle());
+                intent.putExtra("image", radarItem.getImage());
                 startActivity(intent);
             }
         });
