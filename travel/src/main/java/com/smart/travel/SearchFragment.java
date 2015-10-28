@@ -88,7 +88,7 @@ public class SearchFragment extends Fragment {
                         }
 
                         Intent intent = new Intent(getActivity(), SearchResultActivity.class);
-                        intent.putExtra("title", keyword);
+                        intent.putExtra("title", title);
                         intent.putExtra("keyword", keyword);
                         startActivity(intent);
 

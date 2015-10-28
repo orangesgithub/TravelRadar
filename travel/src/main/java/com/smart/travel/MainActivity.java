@@ -15,11 +15,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
@@ -54,20 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.loading)
-                .showImageOnFail(R.drawable.loading)
-                .cacheInMemory(true)
-                .cacheOnDisk(true).build();
-
-        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
-                .threadPoolSize(3).threadPriority(Thread.NORM_PRIORITY - 2)
-                .memoryCache(new UsingFreqLimitedMemoryCache(20 * 1024 * 1024))
-                .diskCacheFileCount(200)
-                .defaultDisplayImageOptions(options)
-                .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000)).build();
-        ImageLoader.getInstance().init(configuration);
 
         radarButton = (ImageButton) findViewById(R.id.btm_radar_btn);
         adviceButton = (ImageButton) findViewById(R.id.btm_tips_btn);
@@ -229,33 +210,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
-
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(networkStateReceiver, filter);
     }
 
     public void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
-
-        unregisterReceiver(networkStateReceiver);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ImageLoader.getInstance().destroy();
+        Log.d(TAG, "onDestroy");
     }
 
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("lastSelectionTab", lastSelectionTab);
+        Log.d(TAG, "onSaveInstanceState");
     }
 
-    private BroadcastReceiver networkStateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-        }
-    };
 }
