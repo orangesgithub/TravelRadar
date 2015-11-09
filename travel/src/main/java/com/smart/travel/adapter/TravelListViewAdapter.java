@@ -83,14 +83,16 @@ public class TravelListViewAdapter extends BaseAdapter {
                     viewHolder2.fromTextView = (TextView) convertView.findViewById(R.id.from);
                     viewHolder2.dateTextView = (TextView) convertView.findViewById(R.id.date);
                     viewHolder2.briefTextView = (TextView) convertView.findViewById(R.id.brief);
+                    viewHolder2.tagTextView = (TextView) convertView.findViewById(R.id.tag);
                     convertView.setTag(viewHolder2);
                 } else {
-                    viewHolder2 = (ViewHolder2)convertView.getTag();
+                    viewHolder2 = (ViewHolder2) convertView.getTag();
                 }
 
                 viewHolder2.fromTextView.setText(item.getAuthor());
                 viewHolder2.dateTextView.setText(item.getPubdate());
                 viewHolder2.briefTextView.setText(item.getTitle());
+                viewHolder2.tagTextView.setText(item.getTag());
                 ImageLoader.getInstance().displayImage(item.getImage(), viewHolder2.imageView);
                 break;
             case TYPE_NORMAL:
@@ -101,14 +103,16 @@ public class TravelListViewAdapter extends BaseAdapter {
                     viewHolder.fromTextView = (TextView) convertView.findViewById(R.id.from);
                     viewHolder.dateTextView = (TextView) convertView.findViewById(R.id.date);
                     viewHolder.briefTextView = (TextView) convertView.findViewById(R.id.brief);
+                    viewHolder.tagTextView = (TextView) convertView.findViewById(R.id.tag);
                     convertView.setTag(viewHolder);
                 } else {
-                    viewHolder = (ViewHolder)convertView.getTag();
+                    viewHolder = (ViewHolder) convertView.getTag();
                 }
 
                 viewHolder.fromTextView.setText(item.getAuthor());
                 viewHolder.dateTextView.setText(item.getPubdate());
                 viewHolder.briefTextView.setText(item.getTitle());
+                viewHolder.tagTextView.setText(item.getTag());
                 ImageLoader.getInstance().displayImage(item.getImage(), viewHolder.imageView);
         }
 
@@ -120,6 +124,7 @@ public class TravelListViewAdapter extends BaseAdapter {
         TextView fromTextView;
         TextView dateTextView;
         TextView briefTextView;
+        TextView tagTextView;
     }
 
     static class ViewHolder2 {
@@ -127,5 +132,6 @@ public class TravelListViewAdapter extends BaseAdapter {
         TextView fromTextView;
         TextView dateTextView;
         TextView briefTextView;
+        TextView tagTextView;
     }
 }

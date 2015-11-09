@@ -9,6 +9,7 @@ public class RadarItem {
     private String url;
     private String type;
     private String author;
+    private String tag;
     private int showType;
 
     public int getId() {
@@ -66,6 +67,10 @@ public class RadarItem {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    public String getTag() { return tag; }
+
+    public void setTag(String tag) { this.tag = tag; }
 
     public int getShowType() {
         return showType;

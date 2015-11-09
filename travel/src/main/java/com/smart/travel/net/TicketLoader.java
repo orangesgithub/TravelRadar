@@ -50,6 +50,7 @@ public class TicketLoader {
             String url = dataObject.getString("url");
             String type = dataObject.getString("type");
             String author = dataObject.getString("author");
+            String tag = dataObject.getString("tag");
             int showType = dataObject.getInt("show_type");
 
             RadarItem radarItem = new RadarItem();
@@ -60,6 +61,7 @@ public class TicketLoader {
             radarItem.setUrl(url);
             radarItem.setType(type);
             radarItem.setAuthor(author);
+            radarItem.setTag(tag);
             radarItem.setShowType(showType);
 
             listItems.add(radarItem);
